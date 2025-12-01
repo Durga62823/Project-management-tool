@@ -5,7 +5,7 @@ import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
-import { sendVerificationEmail, sendWelcomeEmail } from "@/lib/email";
+import { sendVerificationEmail, sendWelcomeEmail } from "@/lib/email-smtp";
 import { logger } from "@/lib/logger";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { signIn } from "@/lib/auth";
@@ -142,6 +142,5 @@ export async function verifyEmail(token: string): Promise<ActionResponse> {
 
   await prisma.verificationToken.deleteMany({ where: { identifier: storedToken.identifier } });
   await sendWelcomeEmail(user.email, user.firstName);
-  revalidatePath("/auth/login");
   return { success: true, message: "Email verified" };
 }

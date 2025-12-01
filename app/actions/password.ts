@@ -4,7 +4,7 @@ import { addHours } from "date-fns";
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
-import { sendPasswordResetEmail } from "@/lib/email";
+import { sendPasswordResetEmail } from "@/lib/email-smtp";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { forgotPasswordSchema, resetPasswordSchema } from "@/lib/validations/auth";
 import { ActionResponse } from "@/app/actions/auth";

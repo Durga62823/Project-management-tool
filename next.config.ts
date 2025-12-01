@@ -53,6 +53,7 @@ const nextConfig: NextConfig = {
         ...config.resolve.alias,
         bcrypt: false,
         "@mapbox/node-pre-gyp": false,
+        nodemailer: false,
       };
     }
     return config;

@@ -4,11 +4,11 @@ import { verifyEmail } from "@/app/actions/auth";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface VerifyEmailTokenPageProps {
-  params: { token: string };
+  params: Promise<{ token: string }>;
 }
 
 export default async function VerifyEmailTokenPage({ params }: VerifyEmailTokenPageProps) {
-  const { token } = params;
+  const { token } = await params;
   const result = await verifyEmail(token);
 
   if (!result.success) {

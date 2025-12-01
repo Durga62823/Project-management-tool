@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 };
 
 interface ResetPasswordPageProps {
-  params: { token: string };
+  params: Promise<{ token: string }>;
 }
 
 export default async function ResetPasswordPage({ params }: ResetPasswordPageProps) {
-  const { token } = params;
+  const { token } = await params;
 
   if (!token) {
     notFound();

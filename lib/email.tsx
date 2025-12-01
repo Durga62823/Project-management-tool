@@ -30,16 +30,19 @@ export async function sendVerificationEmail({ email, token, firstName }: EmailPa
     return;
   }
 
+  // In dev, override recipient to verified email (Resend free tier restriction)
+  const recipientEmail = process.env.DEV_EMAIL_OVERRIDE || email;
+
   try {
     const result = await resend.emails.send({
       from: process.env.EMAIL_FROM!,
-      to: email,
+      to: recipientEmail,
       subject: "Verify your Make It Possible account",
       html: render(
         <EmailVerification firstName={firstName} actionUrl={verificationUrl} />,
       ),
     });
-    console.log(`✓ Verification email sent to ${email}:`, result);
+    console.log(`✓ Verification email sent to ${recipientEmail} (intended: ${email}):`, result);
   } catch (error) {
     console.error(`✗ Failed to send verification email to ${email}:`, error);
     throw error;
@@ -54,14 +57,17 @@ export async function sendPasswordResetEmail({ email, token, firstName }: EmailP
     return;
   }
 
+  // In dev, override recipient to verified email (Resend free tier restriction)
+  const recipientEmail = process.env.DEV_EMAIL_OVERRIDE || email;
+
   try {
     const result = await resend.emails.send({
       from: process.env.EMAIL_FROM!,
-      to: email,
+      to: recipientEmail,
       subject: "Reset your Make It Possible password",
       html: render(<PasswordReset firstName={firstName} actionUrl={resetUrl} />),
     });
-    console.log(`✓ Password reset email sent to ${email}:`, result);
+    console.log(`✓ Password reset email sent to ${recipientEmail} (intended: ${email}):`, result);
   } catch (error) {
     console.error(`✗ Failed to send password reset email to ${email}:`, error);
     throw error;
@@ -74,14 +80,17 @@ export async function sendWelcomeEmail(email: string, firstName?: string | null)
     return;
   }
   
+  // In dev, override recipient to verified email (Resend free tier restriction)
+  const recipientEmail = process.env.DEV_EMAIL_OVERRIDE || email;
+  
   try {
     const result = await resend.emails.send({
       from: process.env.EMAIL_FROM!,
-      to: email,
+      to: recipientEmail,
       subject: "Welcome to Make It Possible",
       html: render(<WelcomeEmail firstName={firstName} />),
     });
-    console.log(`✓ Welcome email sent to ${email}:`, result);
+    console.log(`✓ Welcome email sent to ${recipientEmail} (intended: ${email}):`, result);
   } catch (error) {
     console.error(`✗ Failed to send welcome email to ${email}:`, error);
     throw error;
