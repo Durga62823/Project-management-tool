@@ -15,7 +15,48 @@ const REMEMBERED_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 const DEFAULT_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 const authConfig: NextAuthConfig = {
-  adapter: PrismaAdapter(prisma),
+  adapter: {
+    ...PrismaAdapter(prisma),
+    // Override linkAccount to handle email account linking
+    linkAccount: async (account) => {
+      // Check if a user with this email already exists
+      const provider = account.provider;
+      const providerAccountId = account.providerAccountId;
+      
+      // Try to find existing account
+      const existingAccount = await prisma.account.findUnique({
+        where: {
+          provider_providerAccountId: {
+            provider,
+            providerAccountId,
+          },
+        },
+        include: { user: true },
+      });
+
+      if (existingAccount) {
+        // Account already linked, return it
+        return existingAccount;
+      }
+
+      // Create new account link
+      return await prisma.account.create({
+        data: {
+          userId: account.userId,
+          type: account.type,
+          provider: account.provider,
+          providerAccountId: account.providerAccountId,
+          refresh_token: account.refresh_token,
+          access_token: account.access_token,
+          expires_at: account.expires_at,
+          token_type: account.token_type,
+          scope: account.scope,
+          id_token: account.id_token,
+          session_state: account.session_state,
+        },
+      });
+    },
+  },
   session: {
     strategy: "jwt",
     maxAge: REMEMBERED_MAX_AGE,
@@ -75,63 +116,35 @@ const authConfig: NextAuthConfig = {
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      allowDangerousEmailAccountLinking: true,
     }),
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID ?? "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Allow OAuth sign-in to link accounts automatically
-      if (account?.provider !== "credentials") {
+      // For OAuth providers, auto-verify email if not already verified
+      if (account && account.provider !== "credentials") {
         const email = user.email || profile?.email;
         if (!email) return false;
 
-        // Check if user exists with this email
+        // Check if user exists and needs email verification
         const existingUser = await prisma.user.findUnique({
           where: { email },
-          include: { accounts: true },
         });
 
-        if (existingUser) {
-          // Check if this OAuth provider is already linked
-          const isLinked = existingUser.accounts.some(
-            (acc) => acc.provider === account.provider && acc.providerAccountId === account.providerAccountId
-          );
-
-          // If not linked, link this OAuth account to existing user
-          if (!isLinked) {
-            await prisma.account.create({
-              data: {
-                userId: existingUser.id,
-                type: account.type,
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-                access_token: account.access_token,
-                refresh_token: account.refresh_token,
-                expires_at: account.expires_at,
-                token_type: account.token_type,
-                scope: account.scope,
-                id_token: account.id_token,
-                session_state: account.session_state,
-              },
-            });
-          }
-
-          // Update user info from OAuth if needed
-          if (!existingUser.emailVerified) {
-            await prisma.user.update({
-              where: { id: existingUser.id },
-              data: {
-                emailVerified: new Date(),
-                image: user.image || existingUser.image,
-                name: user.name || existingUser.name,
-              },
-            });
-          }
-
-          return true;
+        if (existingUser && !existingUser.emailVerified) {
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
+              emailVerified: new Date(),
+              image: user.image || existingUser.image,
+              name: user.name || existingUser.name,
+            },
+          });
         }
       }
 
@@ -163,7 +176,7 @@ const authConfig: NextAuthConfig = {
       session.rememberMe = Boolean(token.rememberMe);
       const expiration = (token.sessionExpiresAt as number | undefined) ??
         Math.floor(Date.now() / 1000) + DEFAULT_MAX_AGE;
-      session.expires = new Date(expiration * 1000).toISOString();
+      session.expires = new Date(expiration * 1000).toISOString() as any;
       return session;
     },
     async authorized({ auth }) {

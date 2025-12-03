@@ -14,6 +14,14 @@ export default async function DashboardPage() {
         <p className="mt-3 text-slate-500">
           This is a protected area. Plug in your dashboards, AI copilots, and workflows here.
         </p>
+        <form action="/api/auth/signout" method="post" className="mt-6">
+          <button
+            type="submit"
+            className="rounded-xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+          >
+            Log out
+          </button>
+        </form>
       </div>
     </div>
   );
