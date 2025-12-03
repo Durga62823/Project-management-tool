@@ -94,6 +94,8 @@ model User {
   lastLoginIp         String?
   lastLoginUserAgent  String?
   status              UserStatus           @default(ACTIVE)
+  preferences         Json?                @default("{\"theme\":\"light\",\"language\":\"English\",\"timezone\":\"UTC\"}")
+  notificationSettings Json?               @default("{\"emailNotifications\":true,\"projectUpdates\":true,\"teamActivity\":true,\"loginAlerts\":true}")
 
   accounts            Account[]
   sessions            Session[]

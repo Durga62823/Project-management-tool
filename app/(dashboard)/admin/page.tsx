@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function AdminDashboardPage() {
-  const session = await auth();
+  const session = await auth();                                 
 
   if (!session?.user) {
     redirect("/auth/login");

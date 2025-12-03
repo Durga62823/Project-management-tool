@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
 import { createUser } from "@/app/actions/admin-users";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +27,9 @@ export function CreateUserForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [role, setRole] = useState<"ADMIN" | "MANAGER" | "EMPLOYEE">(
+    "EMPLOYEE"
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,7 +43,7 @@ export function CreateUserForm() {
       firstName: formData.get("firstName") as string,
       lastName: formData.get("lastName") as string,
       password: formData.get("password") as string,
-      role: formData.get("role") as "ADMIN" | "MANAGER" | "EMPLOYEE",
+      role: role,
       position: formData.get("position") as string,
       phoneNumber: formData.get("phoneNumber") as string,
     });
@@ -52,12 +61,10 @@ export function CreateUserForm() {
     <Card>
       <CardHeader>
         <CardTitle>Create New User</CardTitle>
-        <CardDescription>
-          Add a new user to your organization
-        </CardDescription>
+        <CardDescription>Add a new user to your organization</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
               {error}
@@ -116,28 +123,36 @@ export function CreateUserForm() {
             </p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <Select name="role" required disabled={loading}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="EMPLOYEE">Employee</SelectItem>
-                <SelectItem value="MANAGER">Manager</SelectItem>
-                <SelectItem value="ADMIN">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Select
+                value={role}
+                onValueChange={(value) =>
+                  setRole(value as "ADMIN" | "MANAGER" | "EMPLOYEE")
+                }
+                disabled={loading}
+              >
+                <SelectTrigger id="role" className="w-full">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="EMPLOYEE">Employee</SelectItem>
+                  <SelectItem value="MANAGER">Manager</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="position">Position</Label>
-            <Input
-              id="position"
-              name="position"
-              placeholder="Software Engineer"
-              disabled={loading}
-            />
+            <div className="space-y-2">
+              <Label htmlFor="position">Position</Label>
+              <Input
+                id="position"
+                name="position"
+                placeholder="Software Engineer"
+                disabled={loading}
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
