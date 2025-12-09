@@ -16,8 +16,10 @@ export default auth((req) => {
     // User accessing generic dashboard - redirect to their role-specific dashboard
     if (role === "ADMIN") {
       return NextResponse.redirect(new URL("/admin", req.url));
-    } else if (role === "MANAGER" || role === "LEAD") {
+    } else if (role === "MANAGER") {
       return NextResponse.redirect(new URL("/manager", req.url));
+    } else if (role === "LEAD") {
+      return NextResponse.redirect(new URL("/lead", req.url));
     }
     // EMPLOYEE stays on /dashboard
     return NextResponse.next();
@@ -28,23 +30,24 @@ export default auth((req) => {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  // Prevent non-managers/leads from accessing manager pages
-  if (
-    pathname.startsWith("/manager") &&
-    role !== "MANAGER" &&
-    role !== "LEAD"
-  ) {
+  // Prevent non-managers from accessing manager pages
+  if (pathname.startsWith("/manager") && role !== "MANAGER" && role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  // Prevent non-leads from accessing lead pages
+  if (pathname.startsWith("/lead") && role !== "LEAD" && role !== "ADMIN") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();
 });
-
 export const config = {
   matcher: [
     "/dashboard/:path*",
     "/admin/:path*",
     "/manager/:path*",
+    "/lead/:path*",
     "/projects/:path*",
     "/settings/:path*",
   ],

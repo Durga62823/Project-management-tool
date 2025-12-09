@@ -42,10 +42,13 @@ export function LoginForm() {
       const userRole = (result.data as any)?.role;
       let redirectPath = "/dashboard";
 
+      // Role-based routing
       if (userRole === "ADMIN") {
         redirectPath = "/admin";
-      } else if (userRole === "MANAGER" || userRole === "LEAD") {
+      } else if (userRole === "MANAGER") {
         redirectPath = "/manager";
+      } else if (userRole === "LEAD") {
+        redirectPath = "/lead";
       } else {
         redirectPath = "/dashboard";
       }
