@@ -88,22 +88,67 @@ export interface AISprintPlan {
 class AIService {
   private apiKey: string;
   private apiEndpoint: string;
+  private provider: 'perplexity' | 'gemini' | 'openai';
 
   constructor() {
-    // Use Gemini API (free tier available) or OpenAI
-    this.apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY || '';
-    this.apiEndpoint = process.env.GEMINI_API_KEY 
-      ? 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent'
-      : 'https://api.openai.com/v1/chat/completions';
+    // Priority: Perplexity > Gemini > OpenAI
+    if (process.env.PERPLEXITY_API_KEY) {
+      this.apiKey = process.env.PERPLEXITY_API_KEY;
+      this.apiEndpoint = 'https://api.perplexity.ai/chat/completions';
+      this.provider = 'perplexity';
+    } else if (process.env.GEMINI_API_KEY) {
+      this.apiKey = process.env.GEMINI_API_KEY;
+      this.apiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+      this.provider = 'gemini';
+    } else {
+      this.apiKey = process.env.OPENAI_API_KEY || '';
+      this.apiEndpoint = 'https://api.openai.com/v1/chat/completions';
+      this.provider = 'openai';
+    }
   }
 
   private async callAI(prompt: string): Promise<string> {
     if (!this.apiKey) {
-      throw new Error('AI API key not configured. Please set GEMINI_API_KEY or OPENAI_API_KEY in environment variables.');
+      throw new Error('AI API key not configured. Please set PERPLEXITY_API_KEY, GEMINI_API_KEY, or OPENAI_API_KEY in environment variables.');
     }
 
     try {
-      if (process.env.GEMINI_API_KEY) {
+      if (this.provider === 'perplexity') {
+        // Use Perplexity API with reasoning model
+        const response = await fetch(this.apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'sonar-reasoning',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are an expert AI assistant specialized in project management, software development, and team coordination. Provide structured JSON responses as requested.',
+              },
+              { role: 'user', content: prompt }
+            ],
+            max_tokens: 2048,
+            temperature: 0.7,
+            top_p: 0.9,
+            stream: false,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Perplexity API error response:', errorText);
+          throw new Error(`Perplexity API error (${response.status}): ${response.statusText}. ${errorText}`);
+        }
+
+        const data = await response.json();
+        const fullResponse = data.choices?.[0]?.message?.content || '';
+        
+        // Remove <think> tags if present (reasoning model output)
+        return fullResponse.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+      } else if (this.provider === 'gemini') {
         // Use Gemini API
         const response = await fetch(`${this.apiEndpoint}?key=${this.apiKey}`, {
           method: 'POST',
