@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Loader2, Plus, Edit2, Trash2, Target, TrendingUp } from 'lucide-react';
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2, Plus, Edit2, Trash2, Target, TrendingUp } from "lucide-react";
 import {
   getMyGoals,
   createGoal,
@@ -14,7 +20,7 @@ import {
   updateGoalProgress,
   deleteGoal,
   getGoalStats,
-} from '@/app/actions/employee-goals';
+} from "@/app/actions/employee-goals";
 
 interface Goal {
   id: string;
@@ -41,9 +47,9 @@ export default function MyGoalsPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    targetDate: '',
+    title: "",
+    description: "",
+    targetDate: "",
     progress: 0,
   });
 
@@ -70,9 +76,9 @@ export default function MyGoalsPage() {
 
   async function handleCreateGoal(e: React.FormEvent) {
     e.preventDefault();
-    
+
     if (!formData.title.trim()) {
-      alert('Please enter a goal title');
+      alert("Please enter a goal title");
       return;
     }
 
@@ -83,19 +89,19 @@ export default function MyGoalsPage() {
     });
 
     if (result.success) {
-      alert('Goal created successfully!');
-      setFormData({ title: '', description: '', targetDate: '', progress: 0 });
+      alert("Goal created successfully!");
+      setFormData({ title: "", description: "", targetDate: "", progress: 0 });
       setShowCreateDialog(false);
       loadGoals();
       loadStats();
     } else {
-      alert(result.error || 'Failed to create goal');
+      alert(result.error || "Failed to create goal");
     }
   }
 
   async function handleUpdateGoal(e: React.FormEvent) {
     e.preventDefault();
-    
+
     if (!editingGoal) return;
 
     const result = await updateGoal(editingGoal.id, {
@@ -106,13 +112,13 @@ export default function MyGoalsPage() {
     });
 
     if (result.success) {
-      alert('Goal updated successfully!');
+      alert("Goal updated successfully!");
       setEditingGoal(null);
-      setFormData({ title: '', description: '', targetDate: '', progress: 0 });
+      setFormData({ title: "", description: "", targetDate: "", progress: 0 });
       loadGoals();
       loadStats();
     } else {
-      alert(result.error || 'Failed to update goal');
+      alert(result.error || "Failed to update goal");
     }
   }
 
@@ -122,20 +128,20 @@ export default function MyGoalsPage() {
       loadGoals();
       loadStats();
     } else {
-      alert(result.error || 'Failed to update progress');
+      alert(result.error || "Failed to update progress");
     }
   }
 
   async function handleDeleteGoal(goalId: string) {
-    if (!confirm('Are you sure you want to delete this goal?')) return;
+    if (!confirm("Are you sure you want to delete this goal?")) return;
 
     const result = await deleteGoal(goalId);
     if (result.success) {
-      alert('Goal deleted successfully!');
+      alert("Goal deleted successfully!");
       loadGoals();
       loadStats();
     } else {
-      alert(result.error || 'Failed to delete goal');
+      alert(result.error || "Failed to delete goal");
     }
   }
 
@@ -143,24 +149,26 @@ export default function MyGoalsPage() {
     setEditingGoal(goal);
     setFormData({
       title: goal.title,
-      description: goal.description || '',
-      targetDate: goal.targetDate ? new Date(goal.targetDate).toISOString().split('T')[0] : '',
+      description: goal.description || "",
+      targetDate: goal.targetDate
+        ? new Date(goal.targetDate).toISOString().split("T")[0]
+        : "",
       progress: goal.progress,
     });
   }
 
   function getStatusColor(status: string) {
     switch (status) {
-      case 'active':
-        return 'bg-blue-100 text-blue-800';
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'on_hold':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
+      case "active":
+        return "bg-blue-100 text-blue-800";
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "on_hold":
+        return "bg-yellow-100 text-yellow-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   }
 
@@ -177,7 +185,9 @@ export default function MyGoalsPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">My Goals</h1>
-          <p className="text-muted-foreground mt-1">Track and manage your professional goals</p>
+          <p className="text-muted-foreground mt-1">
+            Track and manage your professional goals
+          </p>
         </div>
         <Button onClick={() => setShowCreateDialog(true)}>
           <Plus className="mr-2 h-4 w-4" />
@@ -219,16 +229,23 @@ export default function MyGoalsPage() {
       {(showCreateDialog || editingGoal) && (
         <Card className="border-2 border-blue-200">
           <CardHeader>
-            <CardTitle>{editingGoal ? 'Edit Goal' : 'Create New Goal'}</CardTitle>
+            <CardTitle>
+              {editingGoal ? "Edit Goal" : "Create New Goal"}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={editingGoal ? handleUpdateGoal : handleCreateGoal} className="space-y-4">
+            <form
+              onSubmit={editingGoal ? handleUpdateGoal : handleCreateGoal}
+              className="space-y-4"
+            >
               <div>
                 <Label htmlFor="title">Goal Title *</Label>
                 <Input
                   id="title"
                   value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
                   placeholder="e.g., Learn TypeScript"
                   required
                 />
@@ -239,7 +256,9 @@ export default function MyGoalsPage() {
                 <textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
                   className="w-full min-h-[100px] px-3 py-2 border rounded-md"
                   placeholder="Describe your goal..."
                 />
@@ -251,20 +270,29 @@ export default function MyGoalsPage() {
                   id="targetDate"
                   type="date"
                   value={formData.targetDate}
-                  onChange={(e) => setFormData({ ...formData, targetDate: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, targetDate: e.target.value })
+                  }
                 />
               </div>
 
               {editingGoal && (
                 <div>
-                  <Label htmlFor="progress">Progress: {formData.progress}%</Label>
+                  <Label htmlFor="progress">
+                    Progress: {formData.progress}%
+                  </Label>
                   <input
                     id="progress"
                     type="range"
                     min="0"
                     max="100"
                     value={formData.progress}
-                    onChange={(e) => setFormData({ ...formData, progress: parseInt(e.target.value) })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        progress: parseInt(e.target.value),
+                      })
+                    }
                     className="w-full"
                   />
                 </div>
@@ -272,7 +300,7 @@ export default function MyGoalsPage() {
 
               <div className="flex gap-2">
                 <Button type="submit">
-                  {editingGoal ? 'Update Goal' : 'Create Goal'}
+                  {editingGoal ? "Update Goal" : "Create Goal"}
                 </Button>
                 <Button
                   type="button"
@@ -280,7 +308,12 @@ export default function MyGoalsPage() {
                   onClick={() => {
                     setShowCreateDialog(false);
                     setEditingGoal(null);
-                    setFormData({ title: '', description: '', targetDate: '', progress: 0 });
+                    setFormData({
+                      title: "",
+                      description: "",
+                      targetDate: "",
+                      progress: 0,
+                    });
                   }}
                 >
                   Cancel
@@ -311,11 +344,13 @@ export default function MyGoalsPage() {
                     <div className="flex items-center gap-2 mb-2">
                       <CardTitle className="text-xl">{goal.title}</CardTitle>
                       <Badge className={getStatusColor(goal.status)}>
-                        {goal.status.replace('_', ' ')}
+                        {goal.status.replace("_", " ")}
                       </Badge>
                     </div>
                     {goal.description && (
-                      <CardDescription className="mt-2">{goal.description}</CardDescription>
+                      <CardDescription className="mt-2">
+                        {goal.description}
+                      </CardDescription>
                     )}
                     {goal.targetDate && (
                       <p className="text-sm text-muted-foreground mt-2">
@@ -357,7 +392,12 @@ export default function MyGoalsPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleUpdateProgress(goal.id, Math.max(0, goal.progress - 10))}
+                      onClick={() =>
+                        handleUpdateProgress(
+                          goal.id,
+                          Math.max(0, goal.progress - 10)
+                        )
+                      }
                       disabled={goal.progress === 0}
                     >
                       -10%
@@ -365,19 +405,28 @@ export default function MyGoalsPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleUpdateProgress(goal.id, Math.min(100, goal.progress + 10))}
+                      onClick={() =>
+                        handleUpdateProgress(
+                          goal.id,
+                          Math.min(100, goal.progress + 10)
+                        )
+                      }
                       disabled={goal.progress === 100}
                     >
                       +10%
                     </Button>
-                    {goal.progress === 100 && goal.status === 'active' && (
+                    {goal.progress === 100 && goal.status === "active" && (
                       <Button
                         size="sm"
                         variant="default"
-                        onClick={() => updateGoal(goal.id, { status: 'completed' }).then(() => {
-                          loadGoals();
-                          loadStats();
-                        })}
+                        onClick={() =>
+                          updateGoal(goal.id, { status: "completed" }).then(
+                            () => {
+                              loadGoals();
+                              loadStats();
+                            }
+                          )
+                        }
                       >
                         <TrendingUp className="mr-2 h-4 w-4" />
                         Mark Complete

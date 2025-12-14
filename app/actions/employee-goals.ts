@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import { prisma as prismaClient } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
-import type { PrismaClient } from '@prisma/client';
+import { auth } from "@/lib/auth";
+import { prisma as prismaClient } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import type { PrismaClient } from "@prisma/client";
 
 // Type assertion for prisma
 const prisma = prismaClient as PrismaClient;
@@ -14,25 +14,22 @@ const prisma = prismaClient as PrismaClient;
 export async function getMyGoals() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const goals = await prisma.goal.findMany({
       where: {
         userId: session.user.id,
       },
-      orderBy: [
-        { status: 'asc' },
-        { targetDate: 'asc' },
-      ],
+      orderBy: [{ status: "asc" }, { targetDate: "asc" }],
     });
 
     return { success: true, data: goals };
   } catch (error) {
-    console.error('Error fetching goals:', error);
-    return { success: false, error: 'Failed to fetch goals' };
+    console.error("Error fetching goals:", error);
+    return { success: false, error: "Failed to fetch goals" };
   }
 }
 
@@ -48,9 +45,9 @@ export async function createGoal(data: {
 }) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const goal = await prisma.goal.create({
@@ -60,17 +57,17 @@ export async function createGoal(data: {
         description: data.description,
         targetDate: data.targetDate ? new Date(data.targetDate) : null,
         progress: 0,
-        status: 'active',
+        status: "active",
       },
     });
 
-    revalidatePath('/employee/goals');
-    revalidatePath('/employee');
+    revalidatePath("/employee/goals");
+    revalidatePath("/employee");
 
     return { success: true, data: goal };
   } catch (error) {
-    console.error('Error creating goal:', error);
-    return { success: false, error: 'Failed to create goal' };
+    console.error("Error creating goal:", error);
+    return { success: false, error: "Failed to create goal" };
   }
 }
 
@@ -89,9 +86,9 @@ export async function updateGoal(
 ) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify goal belongs to user
@@ -103,7 +100,7 @@ export async function updateGoal(
     });
 
     if (!goal) {
-      return { success: false, error: 'Goal not found or access denied' };
+      return { success: false, error: "Goal not found or access denied" };
     }
 
     const updateData: any = { ...data };
@@ -116,13 +113,13 @@ export async function updateGoal(
       data: updateData,
     });
 
-    revalidatePath('/employee/goals');
-    revalidatePath('/employee');
+    revalidatePath("/employee/goals");
+    revalidatePath("/employee");
 
     return { success: true, data: updatedGoal };
   } catch (error) {
-    console.error('Error updating goal:', error);
-    return { success: false, error: 'Failed to update goal' };
+    console.error("Error updating goal:", error);
+    return { success: false, error: "Failed to update goal" };
   }
 }
 
@@ -132,9 +129,9 @@ export async function updateGoal(
 export async function updateGoalProgress(goalId: string, progress: number) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify goal belongs to user
@@ -146,7 +143,7 @@ export async function updateGoalProgress(goalId: string, progress: number) {
     });
 
     if (!goal) {
-      return { success: false, error: 'Goal not found or access denied' };
+      return { success: false, error: "Goal not found or access denied" };
     }
 
     // Ensure progress is between 0 and 100
@@ -155,26 +152,26 @@ export async function updateGoalProgress(goalId: string, progress: number) {
     // Automatically update status based on progress
     let status = goal.status;
     if (validProgress >= 100) {
-      status = 'completed';
-    } else if (validProgress > 0 && status === 'active') {
-      status = 'in-progress';
+      status = "completed";
+    } else if (validProgress > 0 && status === "active") {
+      status = "in-progress";
     }
 
     const updatedGoal = await prisma.goal.update({
       where: { id: goalId },
-      data: { 
+      data: {
         progress: validProgress,
         status,
         updatedAt: new Date(),
       },
     });
 
-    revalidatePath('/employee/goals');
+    revalidatePath("/employee/goals");
 
     return { success: true, data: updatedGoal };
   } catch (error) {
-    console.error('Error updating goal progress:', error);
-    return { success: false, error: 'Failed to update progress' };
+    console.error("Error updating goal progress:", error);
+    return { success: false, error: "Failed to update progress" };
   }
 }
 
@@ -184,9 +181,9 @@ export async function updateGoalProgress(goalId: string, progress: number) {
 export async function deleteGoal(goalId: string) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify goal belongs to user
@@ -198,20 +195,20 @@ export async function deleteGoal(goalId: string) {
     });
 
     if (!goal) {
-      return { success: false, error: 'Goal not found or access denied' };
+      return { success: false, error: "Goal not found or access denied" };
     }
 
     await prisma.goal.delete({
       where: { id: goalId },
     });
 
-    revalidatePath('/employee/goals');
-    revalidatePath('/employee');
+    revalidatePath("/employee/goals");
+    revalidatePath("/employee");
 
     return { success: true };
   } catch (error) {
-    console.error('Error deleting goal:', error);
-    return { success: false, error: 'Failed to delete goal' };
+    console.error("Error deleting goal:", error);
+    return { success: false, error: "Failed to delete goal" };
   }
 }
 
@@ -221,9 +218,9 @@ export async function deleteGoal(goalId: string) {
 export async function getGoalStats() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const [total, active, completed, inProgress] = await Promise.all([
@@ -231,21 +228,21 @@ export async function getGoalStats() {
         where: { userId: session.user.id },
       }),
       prisma.goal.count({
-        where: { 
+        where: {
           userId: session.user.id,
-          status: 'active',
+          status: "active",
         },
       }),
       prisma.goal.count({
-        where: { 
+        where: {
           userId: session.user.id,
-          status: 'completed',
+          status: "completed",
         },
       }),
       prisma.goal.count({
-        where: { 
+        where: {
           userId: session.user.id,
-          status: 'in-progress',
+          status: "in-progress",
         },
       }),
     ]);
@@ -256,9 +253,11 @@ export async function getGoalStats() {
       select: { progress: true },
     });
 
-    const avgProgress = goals.length > 0
-      ? goals.reduce((sum: number, g: any) => sum + g.progress, 0) / goals.length
-      : 0;
+    const avgProgress =
+      goals.length > 0
+        ? goals.reduce((sum: number, g: any) => sum + g.progress, 0) /
+          goals.length
+        : 0;
 
     return {
       success: true,
@@ -271,8 +270,8 @@ export async function getGoalStats() {
       },
     };
   } catch (error) {
-    console.error('Error fetching goal stats:', error);
-    return { success: false, error: 'Failed to fetch goal statistics' };
+    console.error("Error fetching goal stats:", error);
+    return { success: false, error: "Failed to fetch goal statistics" };
   }
 }
 
@@ -285,9 +284,9 @@ export async function getFilteredGoals(filter: {
 }) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const whereClause: any = {
@@ -300,15 +299,12 @@ export async function getFilteredGoals(filter: {
 
     const goals = await prisma.goal.findMany({
       where: whereClause,
-      orderBy: [
-        { status: 'asc' },
-        { targetDate: 'asc' },
-      ],
+      orderBy: [{ status: "asc" }, { targetDate: "asc" }],
     });
 
     return { success: true, data: goals };
   } catch (error) {
-    console.error('Error fetching filtered goals:', error);
-    return { success: false, error: 'Failed to fetch filtered goals' };
+    console.error("Error fetching filtered goals:", error);
+    return { success: false, error: "Failed to fetch filtered goals" };
   }
 }

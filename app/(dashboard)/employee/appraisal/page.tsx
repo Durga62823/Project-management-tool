@@ -1,18 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { FileText, Clock, CheckCircle, AlertCircle, Loader2, Save } from 'lucide-react';
-import { 
-  getMyAppraisals, 
-  getCurrentAppraisal, 
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  FileText,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  Save,
+} from "lucide-react";
+import {
+  getMyAppraisals,
+  getCurrentAppraisal,
   getAppraisalStats,
   updateSelfReview,
-  submitAppraisal 
-} from '@/app/actions/employee-appraisal';
+  submitAppraisal,
+} from "@/app/actions/employee-appraisal";
 
 export default function AppraisalPage() {
   const [loading, setLoading] = useState(true);
@@ -29,7 +36,7 @@ export default function AppraisalPage() {
   });
 
   // Form state
-  const [selfReview, setSelfReview] = useState('');
+  const [selfReview, setSelfReview] = useState("");
   const [rating, setRating] = useState<number | undefined>(undefined);
 
   useEffect(() => {
@@ -47,7 +54,7 @@ export default function AppraisalPage() {
 
       if (currentRes.success && currentRes.data) {
         setCurrentAppraisal(currentRes.data);
-        setSelfReview(currentRes.data.selfReview || '');
+        setSelfReview(currentRes.data.selfReview || "");
         setRating(currentRes.data.rating || undefined);
       }
 
@@ -59,7 +66,7 @@ export default function AppraisalPage() {
         setStats(statsRes.data);
       }
     } catch (error) {
-      console.error('Error loading appraisal data:', error);
+      console.error("Error loading appraisal data:", error);
     } finally {
       setLoading(false);
     }
@@ -70,16 +77,20 @@ export default function AppraisalPage() {
 
     setSaving(true);
     try {
-      const result = await updateSelfReview(currentAppraisal.id, selfReview, rating);
+      const result = await updateSelfReview(
+        currentAppraisal.id,
+        selfReview,
+        rating
+      );
       if (result.success) {
-        alert('Draft saved successfully!');
+        alert("Draft saved successfully!");
         loadData();
       } else {
-        alert(result.error || 'Failed to save draft');
+        alert(result.error || "Failed to save draft");
       }
     } catch (error) {
-      console.error('Error saving draft:', error);
-      alert('Failed to save draft');
+      console.error("Error saving draft:", error);
+      alert("Failed to save draft");
     } finally {
       setSaving(false);
     }
@@ -89,7 +100,7 @@ export default function AppraisalPage() {
     if (!currentAppraisal) return;
 
     if (!selfReview.trim()) {
-      alert('Please complete your self-review before submitting');
+      alert("Please complete your self-review before submitting");
       return;
     }
 
@@ -97,14 +108,14 @@ export default function AppraisalPage() {
     try {
       const result = await submitAppraisal(currentAppraisal.id);
       if (result.success) {
-        alert('Appraisal submitted successfully!');
+        alert("Appraisal submitted successfully!");
         loadData();
       } else {
-        alert(result.error || 'Failed to submit appraisal');
+        alert(result.error || "Failed to submit appraisal");
       }
     } catch (error) {
-      console.error('Error submitting appraisal:', error);
-      alert('Failed to submit appraisal');
+      console.error("Error submitting appraisal:", error);
+      alert("Failed to submit appraisal");
     } finally {
       setSubmitting(false);
     }
@@ -112,10 +123,22 @@ export default function AppraisalPage() {
 
   const getStatusBadge = (status: string) => {
     const config = {
-      DRAFT: { variant: 'secondary' as const, label: 'Draft', icon: FileText },
-      IN_PROGRESS: { variant: 'default' as const, label: 'In Progress', icon: Clock },
-      UNDER_REVIEW: { variant: 'default' as const, label: 'Under Review', icon: AlertCircle },
-      COMPLETED: { variant: 'default' as const, label: 'Completed', icon: CheckCircle }
+      DRAFT: { variant: "secondary" as const, label: "Draft", icon: FileText },
+      IN_PROGRESS: {
+        variant: "default" as const,
+        label: "In Progress",
+        icon: Clock,
+      },
+      UNDER_REVIEW: {
+        variant: "default" as const,
+        label: "Under Review",
+        icon: AlertCircle,
+      },
+      COMPLETED: {
+        variant: "default" as const,
+        label: "Completed",
+        icon: CheckCircle,
+      },
     };
     return config[status as keyof typeof config] || config.DRAFT;
   };
@@ -175,9 +198,7 @@ export default function AppraisalPage() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Completed</p>
-              <p className="text-3xl font-bold">
-                {stats.completed}
-              </p>
+              <p className="text-3xl font-bold">{stats.completed}</p>
             </div>
           </div>
         </Card>
@@ -190,7 +211,7 @@ export default function AppraisalPage() {
             <div>
               <p className="text-sm text-gray-600">Avg Rating</p>
               <p className="text-3xl font-bold">
-                {stats.avgRating > 0 ? stats.avgRating.toFixed(1) : 'N/A'}
+                {stats.avgRating > 0 ? stats.avgRating.toFixed(1) : "N/A"}
               </p>
             </div>
           </div>
@@ -209,7 +230,7 @@ export default function AppraisalPage() {
             </Badge>
           </div>
 
-          {currentAppraisal.status === 'DRAFT' ? (
+          {currentAppraisal.status === "DRAFT" ? (
             <div className="space-y-6">
               {/* Self-Assessment */}
               <div>
@@ -231,10 +252,14 @@ export default function AppraisalPage() {
               <div>
                 <Label>Overall Self-Rating</Label>
                 <div className="flex items-center gap-4 mt-2">
-                  <select 
+                  <select
                     className="p-2 border rounded"
-                    value={rating || ''}
-                    onChange={(e) => setRating(e.target.value ? Number(e.target.value) : undefined)}
+                    value={rating || ""}
+                    onChange={(e) =>
+                      setRating(
+                        e.target.value ? Number(e.target.value) : undefined
+                      )
+                    }
                   >
                     <option value="">Select rating...</option>
                     <option value="5">5 - Outstanding</option>
@@ -261,8 +286,8 @@ export default function AppraisalPage() {
                     </>
                   )}
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={handleSubmit}
                   disabled={submitting || !selfReview.trim()}
                 >
@@ -272,7 +297,7 @@ export default function AppraisalPage() {
                       Submitting...
                     </>
                   ) : (
-                    'Submit for Review'
+                    "Submit for Review"
                   )}
                 </Button>
               </div>
@@ -282,10 +307,10 @@ export default function AppraisalPage() {
               <div>
                 <h4 className="font-semibold mb-2">Your Self-Review</h4>
                 <p className="text-gray-700 whitespace-pre-wrap">
-                  {currentAppraisal.selfReview || 'No self-review submitted'}
+                  {currentAppraisal.selfReview || "No self-review submitted"}
                 </p>
               </div>
-              
+
               {currentAppraisal.rating && (
                 <div>
                   <h4 className="font-semibold mb-2">Your Self-Rating</h4>
@@ -321,9 +346,12 @@ export default function AppraisalPage() {
         <Card className="p-6">
           <div className="text-center py-12">
             <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="font-semibold text-lg mb-2">No Active Appraisal Cycle</h3>
+            <h3 className="font-semibold text-lg mb-2">
+              No Active Appraisal Cycle
+            </h3>
             <p className="text-gray-600">
-              There is no active appraisal cycle at the moment. Check back later.
+              There is no active appraisal cycle at the moment. Check back
+              later.
             </p>
           </div>
         </Card>
@@ -347,7 +375,9 @@ export default function AppraisalPage() {
                         <h4 className="font-semibold">
                           {appraisal.cycle?.name}
                         </h4>
-                        <Badge variant={getStatusBadge(appraisal.status).variant}>
+                        <Badge
+                          variant={getStatusBadge(appraisal.status).variant}
+                        >
                           <StatusIcon className="h-3 w-3 mr-1" />
                           {getStatusBadge(appraisal.status).label}
                         </Badge>
@@ -355,24 +385,30 @@ export default function AppraisalPage() {
                       <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                         {appraisal.rating && (
                           <div>
-                            <span className="font-medium">Self Rating:</span> {appraisal.rating}/5
+                            <span className="font-medium">Self Rating:</span>{" "}
+                            {appraisal.rating}/5
                           </div>
                         )}
                         {appraisal.finalRating && (
                           <div>
-                            <span className="font-medium">Final Rating:</span> {appraisal.finalRating}/5
+                            <span className="font-medium">Final Rating:</span>{" "}
+                            {appraisal.finalRating}/5
                           </div>
                         )}
                         {appraisal.submittedAt && (
                           <div>
-                            <span className="font-medium">Submitted:</span>{' '}
-                            {new Date(appraisal.submittedAt).toLocaleDateString()}
+                            <span className="font-medium">Submitted:</span>{" "}
+                            {new Date(
+                              appraisal.submittedAt
+                            ).toLocaleDateString()}
                           </div>
                         )}
                         {appraisal.completedAt && (
                           <div>
-                            <span className="font-medium">Completed:</span>{' '}
-                            {new Date(appraisal.completedAt).toLocaleDateString()}
+                            <span className="font-medium">Completed:</span>{" "}
+                            {new Date(
+                              appraisal.completedAt
+                            ).toLocaleDateString()}
                           </div>
                         )}
                       </div>

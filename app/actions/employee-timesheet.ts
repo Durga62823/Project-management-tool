@@ -1,10 +1,10 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import { prisma as prismaClient } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
-import { TimesheetStatus } from '@prisma/client';
-import type { PrismaClient } from '@prisma/client';
+import { auth } from "@/lib/auth";
+import { prisma as prismaClient } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { TimesheetStatus } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 
 // Type assertion for prisma
 const prisma = prismaClient as PrismaClient;
@@ -15,9 +15,9 @@ const prisma = prismaClient as PrismaClient;
 export async function getCurrentTimesheet() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Calculate week start (Monday) and end (Sunday)
@@ -47,7 +47,7 @@ export async function getCurrentTimesheet() {
             },
           },
           orderBy: {
-            date: 'asc',
+            date: "asc",
           },
         },
       },
@@ -80,8 +80,8 @@ export async function getCurrentTimesheet() {
 
     return { success: true, data: timesheet };
   } catch (error) {
-    console.error('Error fetching timesheet:', error);
-    return { success: false, error: 'Failed to fetch timesheet' };
+    console.error("Error fetching timesheet:", error);
+    return { success: false, error: "Failed to fetch timesheet" };
   }
 }
 
@@ -97,27 +97,29 @@ export async function addTimesheetEntry(data: {
 }) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Validate input
     if (!data.date) {
-      return { success: false, error: 'Date is required' };
+      return { success: false, error: "Date is required" };
     }
     if (!data.projectId) {
-      return { success: false, error: 'Project is required' };
+      return { success: false, error: "Project is required" };
     }
     if (!data.hours || data.hours <= 0 || data.hours > 24) {
-      return { success: false, error: 'Hours must be between 0 and 24' };
+      return { success: false, error: "Hours must be between 0 and 24" };
     }
 
     // Get or create timesheet for the week
     const entryDate = new Date(data.date);
     const dayOfWeek = entryDate.getDay();
     const weekStart = new Date(entryDate);
-    weekStart.setDate(entryDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    weekStart.setDate(
+      entryDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)
+    );
     weekStart.setHours(0, 0, 0, 0);
 
     const weekEnd = new Date(weekStart);
@@ -145,7 +147,7 @@ export async function addTimesheetEntry(data: {
 
     // Check if timesheet is editable
     if (timesheet.status === TimesheetStatus.APPROVED) {
-      return { success: false, error: 'Cannot edit approved timesheet' };
+      return { success: false, error: "Cannot edit approved timesheet" };
     }
 
     // Create entry
@@ -171,15 +173,18 @@ export async function addTimesheetEntry(data: {
       data: { totalHours: totalHours._sum.hours || 0 },
     });
 
-    revalidatePath('/employee/timesheet');
-    revalidatePath('/employee');
+    revalidatePath("/employee/timesheet");
+    revalidatePath("/employee");
 
     return { success: true, data: entry };
   } catch (error) {
-    console.error('Error adding timesheet entry:', error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Failed to add timesheet entry' 
+    console.error("Error adding timesheet entry:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to add timesheet entry",
     };
   }
 }
@@ -197,9 +202,9 @@ export async function updateTimesheetEntry(
 ) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify entry belongs to user's timesheet
@@ -216,11 +221,11 @@ export async function updateTimesheetEntry(
     });
 
     if (!entry) {
-      return { success: false, error: 'Entry not found or access denied' };
+      return { success: false, error: "Entry not found or access denied" };
     }
 
     if (entry.timesheet.status === TimesheetStatus.APPROVED) {
-      return { success: false, error: 'Cannot edit approved timesheet' };
+      return { success: false, error: "Cannot edit approved timesheet" };
     }
 
     const updatedEntry = await prisma.timesheetEntry.update({
@@ -239,12 +244,12 @@ export async function updateTimesheetEntry(
       data: { totalHours: totalHours._sum.hours || 0 },
     });
 
-    revalidatePath('/employee/timesheet');
+    revalidatePath("/employee/timesheet");
 
     return { success: true, data: updatedEntry };
   } catch (error) {
-    console.error('Error updating timesheet entry:', error);
-    return { success: false, error: 'Failed to update entry' };
+    console.error("Error updating timesheet entry:", error);
+    return { success: false, error: "Failed to update entry" };
   }
 }
 
@@ -254,9 +259,9 @@ export async function updateTimesheetEntry(
 export async function deleteTimesheetEntry(entryId: string) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify entry belongs to user's timesheet
@@ -273,11 +278,11 @@ export async function deleteTimesheetEntry(entryId: string) {
     });
 
     if (!entry) {
-      return { success: false, error: 'Entry not found or access denied' };
+      return { success: false, error: "Entry not found or access denied" };
     }
 
     if (entry.timesheet.status === TimesheetStatus.APPROVED) {
-      return { success: false, error: 'Cannot delete from approved timesheet' };
+      return { success: false, error: "Cannot delete from approved timesheet" };
     }
 
     await prisma.timesheetEntry.delete({
@@ -295,12 +300,12 @@ export async function deleteTimesheetEntry(entryId: string) {
       data: { totalHours: totalHours._sum.hours || 0 },
     });
 
-    revalidatePath('/employee/timesheet');
+    revalidatePath("/employee/timesheet");
 
     return { success: true };
   } catch (error) {
-    console.error('Error deleting timesheet entry:', error);
-    return { success: false, error: 'Failed to delete entry' };
+    console.error("Error deleting timesheet entry:", error);
+    return { success: false, error: "Failed to delete entry" };
   }
 }
 
@@ -310,9 +315,9 @@ export async function deleteTimesheetEntry(entryId: string) {
 export async function submitTimesheet(timesheetId: string) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify timesheet belongs to user
@@ -324,27 +329,27 @@ export async function submitTimesheet(timesheetId: string) {
     });
 
     if (!timesheet) {
-      return { success: false, error: 'Timesheet not found or access denied' };
+      return { success: false, error: "Timesheet not found or access denied" };
     }
 
     if (timesheet.status !== TimesheetStatus.DRAFT) {
-      return { success: false, error: 'Timesheet is not in draft status' };
+      return { success: false, error: "Timesheet is not in draft status" };
     }
 
     const updatedTimesheet = await prisma.timesheet.update({
       where: { id: timesheetId },
-      data: { 
+      data: {
         status: TimesheetStatus.SUBMITTED,
         updatedAt: new Date(),
       },
     });
 
-    revalidatePath('/employee/timesheet');
+    revalidatePath("/employee/timesheet");
 
     return { success: true, data: updatedTimesheet };
   } catch (error) {
-    console.error('Error submitting timesheet:', error);
-    return { success: false, error: 'Failed to submit timesheet' };
+    console.error("Error submitting timesheet:", error);
+    return { success: false, error: "Failed to submit timesheet" };
   }
 }
 
@@ -354,9 +359,9 @@ export async function submitTimesheet(timesheetId: string) {
 export async function getTimesheetHistory(limit: number = 10) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const timesheets = await prisma.timesheet.findMany({
@@ -383,15 +388,15 @@ export async function getTimesheetHistory(limit: number = 10) {
         },
       },
       orderBy: {
-        weekStart: 'desc',
+        weekStart: "desc",
       },
       take: limit,
     });
 
     return { success: true, data: timesheets };
   } catch (error) {
-    console.error('Error fetching timesheet history:', error);
-    return { success: false, error: 'Failed to fetch timesheet history' };
+    console.error("Error fetching timesheet history:", error);
+    return { success: false, error: "Failed to fetch timesheet history" };
   }
 }
 
@@ -401,9 +406,9 @@ export async function getTimesheetHistory(limit: number = 10) {
 export async function getTimesheetStats() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const currentMonth = new Date();
@@ -445,12 +450,13 @@ export async function getTimesheetStats() {
       data: {
         totalHours: totalHours._sum.hours || 0,
         billableHours: billableHours._sum.hours || 0,
-        nonBillableHours: (totalHours._sum.hours || 0) - (billableHours._sum.hours || 0),
+        nonBillableHours:
+          (totalHours._sum.hours || 0) - (billableHours._sum.hours || 0),
       },
     };
   } catch (error) {
-    console.error('Error fetching timesheet stats:', error);
-    return { success: false, error: 'Failed to fetch statistics' };
+    console.error("Error fetching timesheet stats:", error);
+    return { success: false, error: "Failed to fetch statistics" };
   }
 }
 
@@ -460,16 +466,16 @@ export async function getTimesheetStats() {
 export async function getAvailableProjects() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Get all active projects (simplified to show all projects for timesheet entry)
     const projects = await prisma.project.findMany({
       where: {
         status: {
-          not: 'COMPLETED', // Exclude completed projects
+          not: "COMPLETED", // Exclude completed projects
         },
       },
       select: {
@@ -478,13 +484,13 @@ export async function getAvailableProjects() {
         status: true,
       },
       orderBy: {
-        name: 'asc',
+        name: "asc",
       },
     });
 
     return { success: true, data: projects };
   } catch (error) {
-    console.error('Error fetching projects:', error);
-    return { success: false, error: 'Failed to fetch projects' };
+    console.error("Error fetching projects:", error);
+    return { success: false, error: "Failed to fetch projects" };
   }
 }

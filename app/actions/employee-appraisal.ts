@@ -1,23 +1,23 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import { prisma as prismaClient } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
-import { AppraisalStatus } from '@prisma/client';
-import type { PrismaClient } from '@prisma/client';
+import { auth } from "@/lib/auth";
+import { prisma as prismaClient } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { AppraisalStatus } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 
 // Type assertion for prisma
 const prisma = prismaClient as PrismaClient;
 
 /**
  * Get all appraisals for the current user
-*/
+ */
 export async function getMyAppraisals() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const appraisals = await prisma.appraisalReview.findMany({
@@ -36,14 +36,14 @@ export async function getMyAppraisals() {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
     return { success: true, data: appraisals };
   } catch (error) {
-    console.error('Error fetching appraisals:', error);
-    return { success: false, error: 'Failed to fetch appraisals' };
+    console.error("Error fetching appraisals:", error);
+    return { success: false, error: "Failed to fetch appraisals" };
   }
 }
 
@@ -53,9 +53,9 @@ export async function getMyAppraisals() {
 export async function getCurrentAppraisal() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Find active appraisal cycle
@@ -103,8 +103,8 @@ export async function getCurrentAppraisal() {
 
     return { success: true, data: appraisal };
   } catch (error) {
-    console.error('Error fetching current appraisal:', error);
-    return { success: false, error: 'Failed to fetch current appraisal' };
+    console.error("Error fetching current appraisal:", error);
+    return { success: false, error: "Failed to fetch current appraisal" };
   }
 }
 
@@ -118,9 +118,9 @@ export async function updateSelfReview(
 ) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify appraisal belongs to user
@@ -132,11 +132,11 @@ export async function updateSelfReview(
     });
 
     if (!appraisal) {
-      return { success: false, error: 'Appraisal not found or access denied' };
+      return { success: false, error: "Appraisal not found or access denied" };
     }
 
     if (appraisal.status === AppraisalStatus.COMPLETED) {
-      return { success: false, error: 'Cannot edit completed appraisal' };
+      return { success: false, error: "Cannot edit completed appraisal" };
     }
 
     const updateData: any = {
@@ -153,12 +153,12 @@ export async function updateSelfReview(
       data: updateData,
     });
 
-    revalidatePath('/employee/appraisal');
+    revalidatePath("/employee/appraisal");
 
     return { success: true, data: updatedAppraisal };
   } catch (error) {
-    console.error('Error updating self-review:', error);
-    return { success: false, error: 'Failed to update self-review' };
+    console.error("Error updating self-review:", error);
+    return { success: false, error: "Failed to update self-review" };
   }
 }
 
@@ -168,9 +168,9 @@ export async function updateSelfReview(
 export async function submitAppraisal(appraisalId: string) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify appraisal belongs to user
@@ -182,15 +182,18 @@ export async function submitAppraisal(appraisalId: string) {
     });
 
     if (!appraisal) {
-      return { success: false, error: 'Appraisal not found or access denied' };
+      return { success: false, error: "Appraisal not found or access denied" };
     }
 
     if (appraisal.status !== AppraisalStatus.DRAFT) {
-      return { success: false, error: 'Appraisal is not in draft status' };
+      return { success: false, error: "Appraisal is not in draft status" };
     }
 
     if (!appraisal.selfReview) {
-      return { success: false, error: 'Self-review is required before submission' };
+      return {
+        success: false,
+        error: "Self-review is required before submission",
+      };
     }
 
     const updatedAppraisal = await prisma.appraisalReview.update({
@@ -202,12 +205,12 @@ export async function submitAppraisal(appraisalId: string) {
       },
     });
 
-    revalidatePath('/employee/appraisal');
+    revalidatePath("/employee/appraisal");
 
     return { success: true, data: updatedAppraisal };
   } catch (error) {
-    console.error('Error submitting appraisal:', error);
-    return { success: false, error: 'Failed to submit appraisal' };
+    console.error("Error submitting appraisal:", error);
+    return { success: false, error: "Failed to submit appraisal" };
   }
 }
 
@@ -217,9 +220,9 @@ export async function submitAppraisal(appraisalId: string) {
 export async function getAppraisalStats() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const [total, draft, inProgress, completed] = await Promise.all([
@@ -227,19 +230,19 @@ export async function getAppraisalStats() {
         where: { userId: session.user.id },
       }),
       prisma.appraisalReview.count({
-        where: { 
+        where: {
           userId: session.user.id,
           status: AppraisalStatus.DRAFT,
         },
       }),
       prisma.appraisalReview.count({
-        where: { 
+        where: {
           userId: session.user.id,
           status: AppraisalStatus.IN_PROGRESS,
         },
       }),
       prisma.appraisalReview.count({
-        where: { 
+        where: {
           userId: session.user.id,
           status: AppraisalStatus.COMPLETED,
         },
@@ -258,9 +261,13 @@ export async function getAppraisalStats() {
       },
     });
 
-    const avgRating = completedAppraisals.length > 0
-      ? completedAppraisals.reduce((sum: number, a) => sum + (a.finalRating || 0), 0) / completedAppraisals.length
-      : 0;
+    const avgRating =
+      completedAppraisals.length > 0
+        ? completedAppraisals.reduce(
+            (sum: number, a) => sum + (a.finalRating || 0),
+            0
+          ) / completedAppraisals.length
+        : 0;
 
     return {
       success: true,
@@ -273,8 +280,8 @@ export async function getAppraisalStats() {
       },
     };
   } catch (error) {
-    console.error('Error fetching appraisal stats:', error);
-    return { success: false, error: 'Failed to fetch appraisal statistics' };
+    console.error("Error fetching appraisal stats:", error);
+    return { success: false, error: "Failed to fetch appraisal statistics" };
   }
 }
 
@@ -284,9 +291,9 @@ export async function getAppraisalStats() {
 export async function getAppraisalById(appraisalId: string) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const appraisal = await prisma.appraisalReview.findFirst({
@@ -300,12 +307,12 @@ export async function getAppraisalById(appraisalId: string) {
     });
 
     if (!appraisal) {
-      return { success: false, error: 'Appraisal not found or access denied' };
+      return { success: false, error: "Appraisal not found or access denied" };
     }
 
     return { success: true, data: appraisal };
   } catch (error) {
-    console.error('Error fetching appraisal:', error);
-    return { success: false, error: 'Failed to fetch appraisal' };
+    console.error("Error fetching appraisal:", error);
+    return { success: false, error: "Failed to fetch appraisal" };
   }
 }

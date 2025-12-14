@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import { prisma as prismaClient } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
-import type { PrismaClient } from '@prisma/client';
+import { auth } from "@/lib/auth";
+import { prisma as prismaClient } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import type { PrismaClient } from "@prisma/client";
 
 // Type assertion for prisma
 const prisma = prismaClient as PrismaClient;
@@ -33,29 +33,29 @@ export interface Task {
 export async function createTask(data: {
   title: string;
   description?: string;
-  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   projectId?: string;
   dueDate?: string;
   estimatedHours?: number;
 }) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const task = await prisma.task.create({
       data: {
         title: data.title,
         description: data.description,
-        priority: data.priority || 'MEDIUM',
+        priority: data.priority || "MEDIUM",
         projectId: data.projectId || null,
         assigneeId: session.user.id, // Assign to self
         reporterId: session.user.id, // Reporter is also self
         dueDate: data.dueDate ? new Date(data.dueDate) : null,
         estimatedHours: data.estimatedHours || null,
-        status: 'TODO',
+        status: "TODO",
       },
       include: {
         project: {
@@ -67,13 +67,13 @@ export async function createTask(data: {
       },
     });
 
-    revalidatePath('/employee/my-work');
-    revalidatePath('/employee');
+    revalidatePath("/employee/my-work");
+    revalidatePath("/employee");
 
     return { success: true, data: task as Task };
   } catch (error) {
-    console.error('Error creating task:', error);
-    return { success: false, error: 'Failed to create task' };
+    console.error("Error creating task:", error);
+    return { success: false, error: "Failed to create task" };
   }
 }
 
@@ -83,9 +83,9 @@ export async function createTask(data: {
 export async function getMyTasks() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const tasks = await prisma.task.findMany({
@@ -100,19 +100,16 @@ export async function getMyTasks() {
           },
         },
       },
-      orderBy: [
-        { dueDate: 'asc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ dueDate: "asc" }, { createdAt: "desc" }],
     });
 
-    return { 
-      success: true, 
-      data: tasks as Task[] 
+    return {
+      success: true,
+      data: tasks as Task[],
     };
   } catch (error) {
-    console.error('Error fetching tasks:', error);
-    return { success: false, error: 'Failed to fetch tasks' };
+    console.error("Error fetching tasks:", error);
+    return { success: false, error: "Failed to fetch tasks" };
   }
 }
 
@@ -122,9 +119,9 @@ export async function getMyTasks() {
 export async function getMyTaskStats() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const [total, inProgress, completed, overdue] = await Promise.all([
@@ -132,50 +129,53 @@ export async function getMyTaskStats() {
         where: { assigneeId: session.user.id },
       }),
       prisma.task.count({
-        where: { 
+        where: {
           assigneeId: session.user.id,
-          status: 'IN_PROGRESS',
+          status: "IN_PROGRESS",
         },
       }),
       prisma.task.count({
-        where: { 
+        where: {
           assigneeId: session.user.id,
-          status: 'DONE',
+          status: "DONE",
         },
       }),
       prisma.task.count({
-        where: { 
+        where: {
           assigneeId: session.user.id,
-          status: { not: 'DONE' },
+          status: { not: "DONE" },
           dueDate: { lt: new Date() },
         },
       }),
     ]);
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       data: {
         total,
         inProgress,
         completed,
         overdue,
-      }
+      },
     };
   } catch (error) {
-    console.error('Error fetching task stats:', error);
-    return { success: false, error: 'Failed to fetch task statistics' };
+    console.error("Error fetching task stats:", error);
+    return { success: false, error: "Failed to fetch task statistics" };
   }
 }
 
 /**
  * Update task status
  */
-export async function updateTaskStatus(taskId: string, status: 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'BLOCKED' | 'DONE') {
+export async function updateTaskStatus(
+  taskId: string,
+  status: "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "BLOCKED" | "DONE"
+) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify task belongs to user
@@ -187,24 +187,24 @@ export async function updateTaskStatus(taskId: string, status: 'TODO' | 'IN_PROG
     });
 
     if (!task) {
-      return { success: false, error: 'Task not found or access denied' };
+      return { success: false, error: "Task not found or access denied" };
     }
 
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
-      data: { 
+      data: {
         status,
         updatedAt: new Date(),
       },
     });
 
-    revalidatePath('/employee/my-work');
-    revalidatePath('/employee');
+    revalidatePath("/employee/my-work");
+    revalidatePath("/employee");
 
     return { success: true, data: updatedTask };
   } catch (error) {
-    console.error('Error updating task status:', error);
-    return { success: false, error: 'Failed to update task status' };
+    console.error("Error updating task status:", error);
+    return { success: false, error: "Failed to update task status" };
   }
 }
 
@@ -214,9 +214,9 @@ export async function updateTaskStatus(taskId: string, status: 'TODO' | 'IN_PROG
 export async function logTaskHours(taskId: string, hours: number) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     // Verify task belongs to user
@@ -228,24 +228,24 @@ export async function logTaskHours(taskId: string, hours: number) {
     });
 
     if (!task) {
-      return { success: false, error: 'Task not found or access denied' };
+      return { success: false, error: "Task not found or access denied" };
     }
 
     const currentHours = task.actualHours || 0;
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
-      data: { 
+      data: {
         actualHours: currentHours + hours,
         updatedAt: new Date(),
       },
     });
 
-    revalidatePath('/employee/my-work');
+    revalidatePath("/employee/my-work");
 
     return { success: true, data: updatedTask };
   } catch (error) {
-    console.error('Error logging task hours:', error);
-    return { success: false, error: 'Failed to log hours' };
+    console.error("Error logging task hours:", error);
+    return { success: false, error: "Failed to log hours" };
   }
 }
 
@@ -255,9 +255,9 @@ export async function logTaskHours(taskId: string, hours: number) {
 export async function getFilteredTasks(filter: string) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const today = new Date();
@@ -269,24 +269,24 @@ export async function getFilteredTasks(filter: string) {
     };
 
     switch (filter) {
-      case 'today':
+      case "today":
         whereClause.dueDate = {
           gte: new Date(today.setHours(0, 0, 0, 0)),
           lte: new Date(today.setHours(23, 59, 59, 999)),
         };
         break;
-      case 'week':
+      case "week":
         whereClause.dueDate = {
           gte: today,
           lte: weekFromNow,
         };
         break;
-      case 'overdue':
+      case "overdue":
         whereClause.dueDate = { lt: new Date() };
-        whereClause.status = { not: 'DONE' };
+        whereClause.status = { not: "DONE" };
         break;
-      case 'blocked':
-        whereClause.status = 'BLOCKED';
+      case "blocked":
+        whereClause.status = "BLOCKED";
         break;
     }
 
@@ -300,15 +300,12 @@ export async function getFilteredTasks(filter: string) {
           },
         },
       },
-      orderBy: [
-        { dueDate: 'asc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ dueDate: "asc" }, { createdAt: "desc" }],
     });
 
     return { success: true, data: tasks as Task[] };
   } catch (error) {
-    console.error('Error fetching filtered tasks:', error);
-    return { success: false, error: 'Failed to fetch filtered tasks' };
+    console.error("Error fetching filtered tasks:", error);
+    return { success: false, error: "Failed to fetch filtered tasks" };
   }
 }

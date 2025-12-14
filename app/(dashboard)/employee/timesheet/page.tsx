@@ -1,12 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Plus, Save, Loader2, Edit, Trash2, Send } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Calendar,
+  Clock,
+  Plus,
+  Save,
+  Loader2,
+  Edit,
+  Trash2,
+  Send,
+} from "lucide-react";
 import {
   getCurrentTimesheet,
   addTimesheetEntry,
@@ -15,7 +24,7 @@ import {
   submitTimesheet,
   getTimesheetStats,
   getAvailableProjects,
-} from '@/app/actions/employee-timesheet';
+} from "@/app/actions/employee-timesheet";
 
 export default function TimesheetPage() {
   const [loading, setLoading] = useState(true);
@@ -33,11 +42,11 @@ export default function TimesheetPage() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingEntry, setEditingEntry] = useState<any>(null);
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
-    projectId: '',
-    taskId: '',
-    hours: '',
-    description: '',
+    date: new Date().toISOString().split("T")[0],
+    projectId: "",
+    taskId: "",
+    hours: "",
+    description: "",
   });
 
   useEffect(() => {
@@ -59,16 +68,20 @@ export default function TimesheetPage() {
 
       if (projectsRes.success && projectsRes.data) {
         setProjects(projectsRes.data);
-        console.log('Loaded projects:', projectsRes.data.length, projectsRes.data);
+        console.log(
+          "Loaded projects:",
+          projectsRes.data.length,
+          projectsRes.data
+        );
       } else {
-        console.log('Failed to load projects:', projectsRes.error);
+        console.log("Failed to load projects:", projectsRes.error);
       }
 
       if (statsRes.success && statsRes.data) {
         setStats(statsRes.data);
       }
     } catch (error) {
-      console.error('Error loading timesheet data:', error);
+      console.error("Error loading timesheet data:", error);
     } finally {
       setLoading(false);
     }
@@ -76,15 +89,15 @@ export default function TimesheetPage() {
 
   const handleAddEntry = async () => {
     if (!formData.date) {
-      alert('Please select a date');
+      alert("Please select a date");
       return;
     }
     if (!formData.projectId) {
-      alert('Please select a project');
+      alert("Please select a project");
       return;
     }
     if (!formData.hours || Number(formData.hours) <= 0) {
-      alert('Please enter valid hours (greater than 0)');
+      alert("Please enter valid hours (greater than 0)");
       return;
     }
 
@@ -99,22 +112,25 @@ export default function TimesheetPage() {
       });
 
       if (result.success) {
-        alert('Time entry added successfully!');
+        alert("Time entry added successfully!");
         setFormData({
-          date: new Date().toISOString().split('T')[0],
-          projectId: '',
-          taskId: '',
-          hours: '',
-          description: '',
+          date: new Date().toISOString().split("T")[0],
+          projectId: "",
+          taskId: "",
+          hours: "",
+          description: "",
         });
         setShowAddDialog(false);
         loadData();
       } else {
-        alert(result.error || 'Failed to add entry');
+        alert(result.error || "Failed to add entry");
       }
     } catch (error) {
-      console.error('Error adding entry:', error);
-      alert('Failed to add entry: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      console.error("Error adding entry:", error);
+      alert(
+        "Failed to add entry: " +
+          (error instanceof Error ? error.message : "Unknown error")
+      );
     } finally {
       setSaving(false);
     }
@@ -122,7 +138,7 @@ export default function TimesheetPage() {
 
   const handleUpdateEntry = async () => {
     if (!editingEntry || !formData.hours) {
-      alert('Please fill in all required fields');
+      alert("Please fill in all required fields");
       return;
     }
 
@@ -137,57 +153,60 @@ export default function TimesheetPage() {
       if (result.success) {
         setEditingEntry(null);
         setFormData({
-          date: new Date().toISOString().split('T')[0],
-          projectId: '',
-          taskId: '',
-          hours: '',
-          description: '',
+          date: new Date().toISOString().split("T")[0],
+          projectId: "",
+          taskId: "",
+          hours: "",
+          description: "",
         });
         loadData();
       } else {
-        alert(result.error || 'Failed to update entry');
+        alert(result.error || "Failed to update entry");
       }
     } catch (error) {
-      console.error('Error updating entry:', error);
-      alert('Failed to update entry');
+      console.error("Error updating entry:", error);
+      alert("Failed to update entry");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDeleteEntry = async (entryId: string) => {
-    if (!confirm('Are you sure you want to delete this entry?')) return;
+    if (!confirm("Are you sure you want to delete this entry?")) return;
 
     try {
       const result = await deleteTimesheetEntry(entryId);
       if (result.success) {
         loadData();
       } else {
-        alert(result.error || 'Failed to delete entry');
+        alert(result.error || "Failed to delete entry");
       }
     } catch (error) {
-      console.error('Error deleting entry:', error);
-      alert('Failed to delete entry');
+      console.error("Error deleting entry:", error);
+      alert("Failed to delete entry");
     }
   };
 
   const handleSubmit = async () => {
     if (!timesheet) return;
 
-    if (!confirm('Are you sure you want to submit this timesheet for approval?')) return;
+    if (
+      !confirm("Are you sure you want to submit this timesheet for approval?")
+    )
+      return;
 
     setSubmitting(true);
     try {
       const result = await submitTimesheet(timesheet.id);
       if (result.success) {
-        alert('Timesheet submitted successfully!');
+        alert("Timesheet submitted successfully!");
         loadData();
       } else {
-        alert(result.error || 'Failed to submit timesheet');
+        alert(result.error || "Failed to submit timesheet");
       }
     } catch (error) {
-      console.error('Error submitting timesheet:', error);
-      alert('Failed to submit timesheet');
+      console.error("Error submitting timesheet:", error);
+      alert("Failed to submit timesheet");
     } finally {
       setSubmitting(false);
     }
@@ -196,40 +215,47 @@ export default function TimesheetPage() {
   const startEdit = (entry: any) => {
     setEditingEntry(entry);
     setFormData({
-      date: new Date(entry.date).toISOString().split('T')[0],
-      projectId: entry.projectId || '',
-      taskId: entry.taskId || '',
+      date: new Date(entry.date).toISOString().split("T")[0],
+      projectId: entry.projectId || "",
+      taskId: entry.taskId || "",
       hours: entry.hours.toString(),
-      description: entry.description || '',
+      description: entry.description || "",
     });
     setShowAddDialog(true);
   };
 
   const getStatusBadge = (status: string) => {
     const config = {
-      DRAFT: { variant: 'secondary' as const, label: 'Draft' },
-      SUBMITTED: { variant: 'default' as const, label: 'Submitted' },
-      APPROVED: { variant: 'default' as const, label: 'Approved' },
-      REJECTED: { variant: 'destructive' as const, label: 'Rejected' },
+      DRAFT: { variant: "secondary" as const, label: "Draft" },
+      SUBMITTED: { variant: "default" as const, label: "Submitted" },
+      APPROVED: { variant: "default" as const, label: "Approved" },
+      REJECTED: { variant: "destructive" as const, label: "Rejected" },
     };
     return config[status as keyof typeof config] || config.DRAFT;
   };
 
   const getWeekNumber = (date: Date): number => {
-    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const d = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    );
     const dayNum = d.getUTCDay() || 7;
     d.setUTCDate(d.getUTCDate() + 4 - dayNum);
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+    return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
   };
 
   const formatDate = (dateString: string | Date): string => {
     try {
-      const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
-      if (isNaN(date.getTime())) return 'Invalid Date';
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const date =
+        typeof dateString === "string" ? new Date(dateString) : dateString;
+      if (isNaN(date.getTime())) return "Invalid Date";
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
     } catch {
-      return 'Invalid Date';
+      return "Invalid Date";
     }
   };
 
@@ -247,19 +273,20 @@ export default function TimesheetPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold mb-2">Timesheet</h1>
-          <p className="text-gray-600">
-            Log and track your work hours
-          </p>
+          <p className="text-gray-600">Log and track your work hours</p>
         </div>
         <div className="flex gap-2">
           {timesheet && (
-            <Badge variant={getStatusBadge(timesheet.status).variant} className="text-lg px-4 py-2">
+            <Badge
+              variant={getStatusBadge(timesheet.status).variant}
+              className="text-lg px-4 py-2"
+            >
               {getStatusBadge(timesheet.status).label}
             </Badge>
           )}
-          <Button 
-            onClick={() => setShowAddDialog(true)} 
-            disabled={timesheet && timesheet.status !== 'DRAFT'}
+          <Button
+            onClick={() => setShowAddDialog(true)}
+            disabled={timesheet && timesheet.status !== "DRAFT"}
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Entry
@@ -312,17 +339,24 @@ export default function TimesheetPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-lg mb-1">
-                Week {timesheet.weekNumber || getWeekNumber(new Date(timesheet.startDate))},{' '}
-                {new Date(timesheet.startDate).getFullYear()}
+                Week{" "}
+                {timesheet.weekNumber ||
+                  getWeekNumber(new Date(timesheet.startDate))}
+                , {new Date(timesheet.startDate).getFullYear()}
               </h3>
               <p className="text-sm text-gray-600">
-                {formatDate(timesheet.startDate)} - {formatDate(timesheet.endDate)}
+                {formatDate(timesheet.startDate)} -{" "}
+                {formatDate(timesheet.endDate)}
               </p>
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-600">Total Hours This Week</p>
               <p className="text-3xl font-bold">
-                {timesheet.entries?.reduce((sum: number, e: any) => sum + e.hours, 0) || 0}h
+                {timesheet.entries?.reduce(
+                  (sum: number, e: any) => sum + e.hours,
+                  0
+                ) || 0}
+                h
               </p>
             </div>
           </div>
@@ -334,7 +368,7 @@ export default function TimesheetPage() {
         <Card className="p-6 border-2 border-blue-500">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-lg">
-              {editingEntry ? 'Edit Time Entry' : 'Add Time Entry'}
+              {editingEntry ? "Edit Time Entry" : "Add Time Entry"}
             </h3>
             <Button
               variant="ghost"
@@ -343,11 +377,11 @@ export default function TimesheetPage() {
                 setShowAddDialog(false);
                 setEditingEntry(null);
                 setFormData({
-                  date: new Date().toISOString().split('T')[0],
-                  projectId: '',
-                  taskId: '',
-                  hours: '',
-                  description: '',
+                  date: new Date().toISOString().split("T")[0],
+                  projectId: "",
+                  taskId: "",
+                  hours: "",
+                  description: "",
                 });
               }}
             >
@@ -361,7 +395,9 @@ export default function TimesheetPage() {
                 type="date"
                 id="date"
                 value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, date: e.target.value })
+                }
                 disabled={!!editingEntry}
               />
             </div>
@@ -375,7 +411,9 @@ export default function TimesheetPage() {
                 min="0"
                 max="24"
                 value={formData.hours}
-                onChange={(e) => setFormData({ ...formData, hours: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, hours: e.target.value })
+                }
               />
             </div>
             <div>
@@ -384,7 +422,9 @@ export default function TimesheetPage() {
                 id="project"
                 className="w-full p-2 border rounded bg-white"
                 value={formData.projectId}
-                onChange={(e) => setFormData({ ...formData, projectId: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, projectId: e.target.value })
+                }
                 disabled={!!editingEntry}
               >
                 <option value="">Select project...</option>
@@ -412,7 +452,9 @@ export default function TimesheetPage() {
                 id="task"
                 placeholder="Task ID or name"
                 value={formData.taskId}
-                onChange={(e) => setFormData({ ...formData, taskId: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, taskId: e.target.value })
+                }
                 disabled={!!editingEntry}
               />
             </div>
@@ -423,12 +465,17 @@ export default function TimesheetPage() {
                 className="w-full p-2 border rounded min-h-20"
                 placeholder="What did you work on?"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
               />
             </div>
           </div>
           <div className="flex gap-2 mt-4">
-            <Button onClick={editingEntry ? handleUpdateEntry : handleAddEntry} disabled={saving}>
+            <Button
+              onClick={editingEntry ? handleUpdateEntry : handleAddEntry}
+              disabled={saving}
+            >
               {saving ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -437,7 +484,7 @@ export default function TimesheetPage() {
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  {editingEntry ? 'Update Entry' : 'Save Entry'}
+                  {editingEntry ? "Update Entry" : "Save Entry"}
                 </>
               )}
             </Button>
@@ -461,21 +508,23 @@ export default function TimesheetPage() {
                       {formatDate(entry.date)}
                     </span>
                     <Badge variant="outline">
-                      {entry.project?.name || 'Unknown Project'}
+                      {entry.project?.name || "Unknown Project"}
                     </Badge>
                     {entry.task && (
-                      <span className="text-sm text-gray-600">Task: {entry.taskId}</span>
+                      <span className="text-sm text-gray-600">
+                        Task: {entry.taskId}
+                      </span>
                     )}
                   </div>
                   <p className="text-sm text-gray-600">
-                    {entry.description || 'No description'}
+                    {entry.description || "No description"}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <p className="font-semibold text-lg">{entry.hours}h</p>
                   </div>
-                  {timesheet.status === 'DRAFT' && (
+                  {timesheet.status === "DRAFT" && (
                     <div className="flex gap-2">
                       <Button
                         size="sm"
@@ -501,54 +550,66 @@ export default function TimesheetPage() {
           <div className="text-center py-12 text-gray-500">
             <Clock className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <p>No time entries for this week yet</p>
-            <p className="text-sm mt-2">Click "Add Entry" to log your work hours</p>
-          </div>
-        )}
-
-        {timesheet && timesheet.status === 'DRAFT' && timesheet.entries?.length > 0 && (
-          <div className="mt-6 pt-6 border-t flex items-center justify-between">
-            <p className="text-sm text-gray-600">
-              {timesheet.entries.length} entries •{' '}
-              {timesheet.entries.reduce((sum: number, e: any) => sum + e.hours, 0)} total hours
+            <p className="text-sm mt-2">
+              Click "Add Entry" to log your work hours
             </p>
-            <Button onClick={handleSubmit} disabled={submitting}>
-              {submitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                <>
-                  <Send className="h-4 w-4 mr-2" />
-                  Submit Timesheet
-                </>
-              )}
-            </Button>
           </div>
         )}
 
-        {timesheet && timesheet.status === 'SUBMITTED' && (
+        {timesheet &&
+          timesheet.status === "DRAFT" &&
+          timesheet.entries?.length > 0 && (
+            <div className="mt-6 pt-6 border-t flex items-center justify-between">
+              <p className="text-sm text-gray-600">
+                {timesheet.entries.length} entries •{" "}
+                {timesheet.entries.reduce(
+                  (sum: number, e: any) => sum + e.hours,
+                  0
+                )}{" "}
+                total hours
+              </p>
+              <Button onClick={handleSubmit} disabled={submitting}>
+                {submitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    Submit Timesheet
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+
+        {timesheet && timesheet.status === "SUBMITTED" && (
           <div className="mt-6 pt-6 border-t">
             <p className="text-center text-gray-600">
-              Timesheet submitted on{' '}
-              {timesheet.submittedAt ? formatDate(timesheet.submittedAt) : 'N/A'}. Awaiting manager
-              approval.
+              Timesheet submitted on{" "}
+              {timesheet.submittedAt
+                ? formatDate(timesheet.submittedAt)
+                : "N/A"}
+              . Awaiting manager approval.
             </p>
           </div>
         )}
 
-        {timesheet && timesheet.status === 'APPROVED' && (
+        {timesheet && timesheet.status === "APPROVED" && (
           <div className="mt-6 pt-6 border-t">
             <div className="bg-green-50 border border-green-200 rounded p-4">
               <p className="text-green-800 font-medium">
-                ✓ Timesheet approved on{' '}
-                {timesheet.approvedAt ? formatDate(timesheet.approvedAt) : 'N/A'}
+                ✓ Timesheet approved on{" "}
+                {timesheet.approvedAt
+                  ? formatDate(timesheet.approvedAt)
+                  : "N/A"}
               </p>
             </div>
           </div>
         )}
 
-        {timesheet && timesheet.status === 'REJECTED' && (
+        {timesheet && timesheet.status === "REJECTED" && (
           <div className="mt-6 pt-6 border-t">
             <div className="bg-red-50 border border-red-200 rounded p-4">
               <p className="text-red-800 font-medium">Timesheet rejected</p>

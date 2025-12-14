@@ -1,16 +1,29 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, TrendingUp, TrendingDown, Target, Clock, CheckCircle2 } from 'lucide-react';
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Loader2,
+  TrendingUp,
+  TrendingDown,
+  Target,
+  Clock,
+  CheckCircle2,
+} from "lucide-react";
 import {
   getMyPerformanceMetrics,
   getTaskCompletionStats,
   getTimeEstimationAccuracy,
   getMonthlyPerformanceTrend,
   getProjectPerformance,
-} from '@/app/actions/employee-performance';
+} from "@/app/actions/employee-performance";
 
 interface PerformanceMetric {
   id: string;
@@ -66,7 +79,7 @@ export default function PerformancePage() {
 
   async function loadAllData() {
     setLoading(true);
-    
+
     const [metricsRes, taskRes, timeRes] = await Promise.all([
       getMyPerformanceMetrics(),
       getTaskCompletionStats(),
@@ -87,15 +100,15 @@ export default function PerformancePage() {
   }
 
   function getScoreColor(score: number) {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
   }
 
   function getScoreBadge(score: number) {
-    if (score >= 80) return 'bg-green-100 text-green-800';
-    if (score >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (score >= 80) return "bg-green-100 text-green-800";
+    if (score >= 60) return "bg-yellow-100 text-yellow-800";
+    return "bg-red-100 text-red-800";
   }
 
   if (loading) {
@@ -110,7 +123,9 @@ export default function PerformancePage() {
     <div className="container mx-auto p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold">My Performance</h1>
-        <p className="text-muted-foreground mt-1">Track your performance metrics and productivity</p>
+        <p className="text-muted-foreground mt-1">
+          Track your performance metrics and productivity
+        </p>
       </div>
 
       {/* Key Performance Indicators */}
@@ -125,7 +140,9 @@ export default function PerformancePage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">{taskStats.completionRate}%</div>
+                <div className="text-3xl font-bold">
+                  {taskStats.completionRate}%
+                </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {taskStats.completedTasks} of {taskStats.totalTasks} tasks
                 </p>
@@ -140,7 +157,9 @@ export default function PerformancePage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">{taskStats.onTimeRate}%</div>
+                <div className="text-3xl font-bold">
+                  {taskStats.onTimeRate}%
+                </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {taskStats.onTimeTasks} tasks delivered on time
                 </p>
@@ -158,11 +177,16 @@ export default function PerformancePage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className={`text-3xl font-bold ${getScoreColor(timeAccuracy.accuracy)}`}>
+              <div
+                className={`text-3xl font-bold ${getScoreColor(
+                  timeAccuracy.accuracy
+                )}`}
+              >
                 {Math.round(timeAccuracy.accuracy)}%
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                {timeAccuracy.variance > 0 ? '+' : ''}{Math.round(timeAccuracy.variance)}% variance
+                {timeAccuracy.variance > 0 ? "+" : ""}
+                {Math.round(timeAccuracy.variance)}% variance
               </p>
             </CardContent>
           </Card>
@@ -174,17 +198,27 @@ export default function PerformancePage() {
         <Card>
           <CardHeader>
             <CardTitle>Time Estimation Analysis</CardTitle>
-            <CardDescription>How accurately you estimate task durations</CardDescription>
+            <CardDescription>
+              How accurately you estimate task durations
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Total Estimated Hours</p>
-                <p className="text-2xl font-bold">{timeAccuracy.totalEstimated.toFixed(1)}h</p>
+                <p className="text-sm text-muted-foreground">
+                  Total Estimated Hours
+                </p>
+                <p className="text-2xl font-bold">
+                  {timeAccuracy.totalEstimated.toFixed(1)}h
+                </p>
               </div>
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Total Actual Hours</p>
-                <p className="text-2xl font-bold">{timeAccuracy.totalActual.toFixed(1)}h</p>
+                <p className="text-sm text-muted-foreground">
+                  Total Actual Hours
+                </p>
+                <p className="text-2xl font-bold">
+                  {timeAccuracy.totalActual.toFixed(1)}h
+                </p>
               </div>
             </div>
             <div className="mt-4">
@@ -195,7 +229,9 @@ export default function PerformancePage() {
                   <TrendingDown className="h-5 w-5 text-green-500" />
                 )}
                 <span className="text-sm">
-                  {timeAccuracy.variance > 0 ? 'Over-estimated by' : 'Under-estimated by'}{' '}
+                  {timeAccuracy.variance > 0
+                    ? "Over-estimated by"
+                    : "Under-estimated by"}{" "}
                   {Math.abs(Math.round(timeAccuracy.variance))}%
                 </span>
               </div>
@@ -209,21 +245,29 @@ export default function PerformancePage() {
         <Card>
           <CardHeader>
             <CardTitle>Recent Metrics</CardTitle>
-            <CardDescription>Detailed performance metrics by project</CardDescription>
+            <CardDescription>
+              Detailed performance metrics by project
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {metrics.map((metric) => (
-                <div key={metric.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div
+                  key={metric.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium">{(metric.metricType || metric.metric).replace('_', ' ')}</p>
+                      <p className="font-medium">
+                        {(metric.metricType || metric.metric).replace("_", " ")}
+                      </p>
                       {metric.project && (
                         <Badge variant="outline">{metric.project.name}</Badge>
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {new Date(metric.recordedAt).toLocaleDateString()} · {metric.period}
+                      {new Date(metric.recordedAt).toLocaleDateString()} ·{" "}
+                      {metric.period}
                     </p>
                   </div>
                   <div className="text-right">
@@ -243,7 +287,8 @@ export default function PerformancePage() {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <TrendingUp className="h-12 w-12 text-gray-400 mb-4" />
             <p className="text-gray-500 text-center">
-              No performance data available yet. Complete tasks to see your metrics!
+              No performance data available yet. Complete tasks to see your
+              metrics!
             </p>
           </CardContent>
         </Card>

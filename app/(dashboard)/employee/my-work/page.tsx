@@ -1,33 +1,33 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { 
-  CheckCircle, 
-  Clock, 
-  AlertCircle, 
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  CheckCircle,
+  Clock,
+  AlertCircle,
   Search,
   X,
   Loader2,
-  Plus
-} from 'lucide-react';
-import { 
-  getMyTasks, 
-  getMyTaskStats, 
-  updateTaskStatus, 
-  logTaskHours, 
+  Plus,
+} from "lucide-react";
+import {
+  getMyTasks,
+  getMyTaskStats,
+  updateTaskStatus,
+  logTaskHours,
   getFilteredTasks,
   createTask,
-  type Task 
-} from '@/app/actions/employee-tasks';
-import { getAvailableProjects } from '@/app/actions/employee-timesheet';
+  type Task,
+} from "@/app/actions/employee-tasks";
+import { getAvailableProjects } from "@/app/actions/employee-timesheet";
 
-type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'BLOCKED' | 'DONE';
-type FilterType = 'all' | 'today' | 'week' | 'overdue' | 'blocked';
+type TaskStatus = "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "BLOCKED" | "DONE";
+type FilterType = "all" | "today" | "week" | "overdue" | "blocked";
 
 interface TaskStats {
   total: number;
@@ -39,28 +39,33 @@ interface TaskStats {
 export default function MyWorkPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState<TaskStats | null>(null);
-  const [filter, setFilter] = useState<FilterType>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  
+
   // Log Time Dialog State
-  const [logTimeDialog, setLogTimeDialog] = useState<{ open: boolean; taskId: string | null }>({
+  const [logTimeDialog, setLogTimeDialog] = useState<{
+    open: boolean;
+    taskId: string | null;
+  }>({
     open: false,
-    taskId: null
+    taskId: null,
   });
-  const [hoursToLog, setHoursToLog] = useState('');
+  const [hoursToLog, setHoursToLog] = useState("");
 
   // Create Task Dialog State
   const [createTaskDialog, setCreateTaskDialog] = useState(false);
-  const [availableProjects, setAvailableProjects] = useState<Array<{ id: string; name: string }>>([]);
+  const [availableProjects, setAvailableProjects] = useState<
+    Array<{ id: string; name: string }>
+  >([]);
   const [newTask, setNewTask] = useState({
-    title: '',
-    description: '',
-    priority: 'MEDIUM' as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT',
-    projectId: '',
-    dueDate: '',
-    estimatedHours: ''
+    title: "",
+    description: "",
+    priority: "MEDIUM" as "LOW" | "MEDIUM" | "HIGH" | "URGENT",
+    projectId: "",
+    dueDate: "",
+    estimatedHours: "",
   });
 
   useEffect(() => {
@@ -76,22 +81,21 @@ export default function MyWorkPage() {
         setAvailableProjects(result.data);
       }
     } catch (error) {
-      console.error('Error loading projects:', error);
+      console.error("Error loading projects:", error);
     }
   };
 
   const loadTasks = async () => {
     setLoading(true);
     try {
-      const result = filter === 'all' 
-        ? await getMyTasks()
-        : await getFilteredTasks(filter);
-      
+      const result =
+        filter === "all" ? await getMyTasks() : await getFilteredTasks(filter);
+
       if (result.success && result.data) {
         setTasks(result.data);
       }
     } catch (error) {
-      console.error('Error loading tasks:', error);
+      console.error("Error loading tasks:", error);
     } finally {
       setLoading(false);
     }
@@ -104,7 +108,7 @@ export default function MyWorkPage() {
         setStats(result.data);
       }
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error("Error loading stats:", error);
     }
   };
 
@@ -117,7 +121,7 @@ export default function MyWorkPage() {
         await loadStats();
       }
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error("Error updating status:", error);
     } finally {
       setActionLoading(null);
     }
@@ -125,12 +129,12 @@ export default function MyWorkPage() {
 
   const handleLogTime = async () => {
     if (!logTimeDialog.taskId || !hoursToLog) return;
-    
+
     setActionLoading(logTimeDialog.taskId);
     try {
       const hours = parseFloat(hoursToLog);
       if (isNaN(hours) || hours <= 0) {
-        alert('Please enter a valid number of hours');
+        alert("Please enter a valid number of hours");
         return;
       }
 
@@ -138,10 +142,10 @@ export default function MyWorkPage() {
       if (result.success) {
         await loadTasks();
         setLogTimeDialog({ open: false, taskId: null });
-        setHoursToLog('');
+        setHoursToLog("");
       }
     } catch (error) {
-      console.error('Error logging time:', error);
+      console.error("Error logging time:", error);
     } finally {
       setActionLoading(null);
     }
@@ -149,11 +153,11 @@ export default function MyWorkPage() {
 
   const handleCreateTask = async () => {
     if (!newTask.title.trim()) {
-      alert('Task title is required');
+      alert("Task title is required");
       return;
     }
 
-    setActionLoading('create');
+    setActionLoading("create");
     try {
       const result = await createTask({
         title: newTask.title,
@@ -161,7 +165,9 @@ export default function MyWorkPage() {
         priority: newTask.priority,
         projectId: newTask.projectId || undefined,
         dueDate: newTask.dueDate || undefined,
-        estimatedHours: newTask.estimatedHours ? parseFloat(newTask.estimatedHours) : undefined,
+        estimatedHours: newTask.estimatedHours
+          ? parseFloat(newTask.estimatedHours)
+          : undefined,
       });
 
       if (result.success) {
@@ -169,43 +175,50 @@ export default function MyWorkPage() {
         await loadStats();
         setCreateTaskDialog(false);
         setNewTask({
-          title: '',
-          description: '',
-          priority: 'MEDIUM',
-          projectId: '',
-          dueDate: '',
-          estimatedHours: ''
+          title: "",
+          description: "",
+          priority: "MEDIUM",
+          projectId: "",
+          dueDate: "",
+          estimatedHours: "",
         });
       } else {
-        alert(result.error || 'Failed to create task');
+        alert(result.error || "Failed to create task");
       }
     } catch (error) {
-      console.error('Error creating task:', error);
-      alert('Failed to create task');
+      console.error("Error creating task:", error);
+      alert("Failed to create task");
     } finally {
       setActionLoading(null);
     }
   };
 
   const getStatusBadge = (status: string) => {
-    const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline' | 'destructive' }> = {
-      'TODO': { label: 'To Do', variant: 'secondary' },
-      'IN_PROGRESS': { label: 'In Progress', variant: 'default' },
-      'IN_REVIEW': { label: 'In Review', variant: 'outline' },
-      'BLOCKED': { label: 'Blocked', variant: 'destructive' },
-      'DONE': { label: 'Done', variant: 'default' }
+    const statusConfig: Record<
+      string,
+      {
+        label: string;
+        variant: "default" | "secondary" | "outline" | "destructive";
+      }
+    > = {
+      TODO: { label: "To Do", variant: "secondary" },
+      IN_PROGRESS: { label: "In Progress", variant: "default" },
+      IN_REVIEW: { label: "In Review", variant: "outline" },
+      BLOCKED: { label: "Blocked", variant: "destructive" },
+      DONE: { label: "Done", variant: "default" },
     };
-    return statusConfig[status] || statusConfig['TODO'];
+    return statusConfig[status] || statusConfig["TODO"];
   };
 
   const getPriorityBadge = (priority: string) => {
-    const priorityConfig: Record<string, { label: string; className: string }> = {
-      'LOW': { label: 'Low', className: 'bg-gray-100 text-gray-700' },
-      'MEDIUM': { label: 'Medium', className: 'bg-orange-100 text-orange-700' },
-      'HIGH': { label: 'High', className: 'bg-red-100 text-red-700' },
-      'URGENT': { label: 'Urgent', className: 'bg-red-200 text-red-900' }
-    };
-    return priorityConfig[priority] || priorityConfig['MEDIUM'];
+    const priorityConfig: Record<string, { label: string; className: string }> =
+      {
+        LOW: { label: "Low", className: "bg-gray-100 text-gray-700" },
+        MEDIUM: { label: "Medium", className: "bg-orange-100 text-orange-700" },
+        HIGH: { label: "High", className: "bg-red-100 text-red-700" },
+        URGENT: { label: "Urgent", className: "bg-red-200 text-red-900" },
+      };
+    return priorityConfig[priority] || priorityConfig["MEDIUM"];
   };
 
   const isOverdue = (dueDate: Date | null) => {
@@ -214,18 +227,20 @@ export default function MyWorkPage() {
   };
 
   const formatDate = (date: Date | null) => {
-    if (!date) return 'No deadline';
-    return new Date(date).toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    if (!date) return "No deadline";
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
-  const filteredTasks = tasks.filter(task => {
+  const filteredTasks = tasks.filter((task) => {
     if (!searchQuery) return true;
-    return task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           task.project?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+    return (
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.project?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   });
 
   return (
@@ -257,16 +272,18 @@ export default function MyWorkPage() {
           />
         </div>
         <div className="flex gap-2">
-          {(['all', 'today', 'week', 'overdue', 'blocked'] as FilterType[]).map((f) => (
-            <Button
-              key={f}
-              variant={filter === f ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter(f)}
-            >
-              {f.charAt(0).toUpperCase() + f.slice(1)}
-            </Button>
-          ))}
+          {(["all", "today", "week", "overdue", "blocked"] as FilterType[]).map(
+            (f) => (
+              <Button
+                key={f}
+                variant={filter === f ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter(f)}
+              >
+                {f.charAt(0).toUpperCase() + f.slice(1)}
+              </Button>
+            )
+          )}
         </div>
       </div>
 
@@ -330,7 +347,9 @@ export default function MyWorkPage() {
         ) : filteredTasks.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
             <p className="text-lg font-medium">No tasks found</p>
-            <p className="text-sm">Try adjusting your filters or search query</p>
+            <p className="text-sm">
+              Try adjusting your filters or search query
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -343,22 +362,25 @@ export default function MyWorkPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="font-semibold text-lg">{task.title}</h3>
-                      {isOverdue(task.dueDate) && task.status !== 'DONE' && (
+                      {isOverdue(task.dueDate) && task.status !== "DONE" && (
                         <Badge variant="destructive" className="text-xs">
                           Overdue
                         </Badge>
                       )}
                     </div>
                     <p className="text-sm text-gray-600 mb-2">
-                      {task.project?.name || 'No project'}
+                      {task.project?.name || "No project"}
                     </p>
                     {task.description && (
-                      <p className="text-sm text-gray-500 mb-2">{task.description}</p>
+                      <p className="text-sm text-gray-500 mb-2">
+                        {task.description}
+                      </p>
                     )}
                     <div className="flex items-center gap-4 text-sm text-gray-600">
                       <span>Due: {formatDate(task.dueDate)}</span>
                       <span>
-                        Time: {task.actualHours || 0}h / {task.estimatedHours || 0}h
+                        Time: {task.actualHours || 0}h /{" "}
+                        {task.estimatedHours || 0}h
                       </span>
                     </div>
                   </div>
@@ -366,17 +388,21 @@ export default function MyWorkPage() {
                     <Badge variant={getStatusBadge(task.status).variant}>
                       {getStatusBadge(task.status).label}
                     </Badge>
-                    <Badge className={getPriorityBadge(task.priority).className}>
+                    <Badge
+                      className={getPriorityBadge(task.priority).className}
+                    >
                       {getPriorityBadge(task.priority).label}
                     </Badge>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 pt-3 border-t">
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
-                    onClick={() => setLogTimeDialog({ open: true, taskId: task.id })}
+                    onClick={() =>
+                      setLogTimeDialog({ open: true, taskId: task.id })
+                    }
                     disabled={actionLoading === task.id}
                   >
                     {actionLoading === task.id ? (
@@ -384,10 +410,12 @@ export default function MyWorkPage() {
                     ) : null}
                     Log Time
                   </Button>
-                  <select 
+                  <select
                     className="px-3 py-1 border rounded text-sm"
                     value={task.status}
-                    onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
+                    onChange={(e) =>
+                      handleStatusChange(task.id, e.target.value as TaskStatus)
+                    }
                     disabled={actionLoading === task.id}
                   >
                     <option value="TODO">To Do</option>
@@ -414,13 +442,13 @@ export default function MyWorkPage() {
                 size="sm"
                 onClick={() => {
                   setLogTimeDialog({ open: false, taskId: null });
-                  setHoursToLog('');
+                  setHoursToLog("");
                 }}
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <Label htmlFor="hours">Hours worked</Label>
@@ -434,11 +462,13 @@ export default function MyWorkPage() {
                   onChange={(e) => setHoursToLog(e.target.value)}
                 />
               </div>
-              
+
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={handleLogTime}
-                  disabled={!hoursToLog || actionLoading === logTimeDialog.taskId}
+                  disabled={
+                    !hoursToLog || actionLoading === logTimeDialog.taskId
+                  }
                   className="flex-1"
                 >
                   {actionLoading === logTimeDialog.taskId ? (
@@ -446,11 +476,11 @@ export default function MyWorkPage() {
                   ) : null}
                   Log Time
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => {
                     setLogTimeDialog({ open: false, taskId: null });
-                    setHoursToLog('');
+                    setHoursToLog("");
                   }}
                   className="flex-1"
                 >
@@ -474,19 +504,19 @@ export default function MyWorkPage() {
                 onClick={() => {
                   setCreateTaskDialog(false);
                   setNewTask({
-                    title: '',
-                    description: '',
-                    priority: 'MEDIUM',
-                    projectId: '',
-                    dueDate: '',
-                    estimatedHours: ''
+                    title: "",
+                    description: "",
+                    priority: "MEDIUM",
+                    projectId: "",
+                    dueDate: "",
+                    estimatedHours: "",
                   });
                 }}
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <Label htmlFor="task-title">Title *</Label>
@@ -494,7 +524,9 @@ export default function MyWorkPage() {
                   id="task-title"
                   placeholder="Enter task title"
                   value={newTask.title}
-                  onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, title: e.target.value })
+                  }
                 />
               </div>
 
@@ -505,7 +537,9 @@ export default function MyWorkPage() {
                   className="w-full p-2 border rounded min-h-24"
                   placeholder="Enter task description"
                   value={newTask.description}
-                  onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, description: e.target.value })
+                  }
                 />
               </div>
 
@@ -516,7 +550,12 @@ export default function MyWorkPage() {
                     id="task-priority"
                     className="w-full p-2 border rounded"
                     value={newTask.priority}
-                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as any })}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        priority: e.target.value as any,
+                      })
+                    }
                   >
                     <option value="LOW">Low</option>
                     <option value="MEDIUM">Medium</option>
@@ -531,7 +570,9 @@ export default function MyWorkPage() {
                     id="task-project"
                     className="w-full p-2 border rounded"
                     value={newTask.projectId}
-                    onChange={(e) => setNewTask({ ...newTask, projectId: e.target.value })}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, projectId: e.target.value })
+                    }
                   >
                     <option value="">No Project</option>
                     {availableProjects.map((project) => (
@@ -550,12 +591,16 @@ export default function MyWorkPage() {
                     id="task-duedate"
                     type="date"
                     value={newTask.dueDate}
-                    onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, dueDate: e.target.value })
+                    }
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="task-estimated">Estimated Hours (Optional)</Label>
+                  <Label htmlFor="task-estimated">
+                    Estimated Hours (Optional)
+                  </Label>
                   <Input
                     id="task-estimated"
                     type="number"
@@ -563,33 +608,35 @@ export default function MyWorkPage() {
                     min="0"
                     placeholder="e.g., 8"
                     value={newTask.estimatedHours}
-                    onChange={(e) => setNewTask({ ...newTask, estimatedHours: e.target.value })}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, estimatedHours: e.target.value })
+                    }
                   />
                 </div>
               </div>
-              
+
               <div className="flex gap-2 pt-4">
-                <Button 
+                <Button
                   onClick={handleCreateTask}
-                  disabled={!newTask.title.trim() || actionLoading === 'create'}
+                  disabled={!newTask.title.trim() || actionLoading === "create"}
                   className="flex-1"
                 >
-                  {actionLoading === 'create' ? (
+                  {actionLoading === "create" ? (
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   ) : null}
                   Create Task
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => {
                     setCreateTaskDialog(false);
                     setNewTask({
-                      title: '',
-                      description: '',
-                      priority: 'MEDIUM',
-                      projectId: '',
-                      dueDate: '',
-                      estimatedHours: ''
+                      title: "",
+                      description: "",
+                      priority: "MEDIUM",
+                      projectId: "",
+                      dueDate: "",
+                      estimatedHours: "",
                     });
                   }}
                   className="flex-1"

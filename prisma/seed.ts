@@ -263,14 +263,17 @@ async function seed() {
       },
     });
 
-    console.log("✅ Created 12 users (1 Admin, 2 Managers, 3 Leads, 6 Employees)\n");
+    console.log(
+      "✅ Created 12 users (1 Admin, 2 Managers, 3 Leads, 6 Employees)\n"
+    );
 
     // Create Projects
     console.log("📁 Creating projects...");
     const project1 = await prisma.project.create({
       data: {
         name: "E-Commerce Platform",
-        description: "Next.js based e-commerce platform with real-time inventory",
+        description:
+          "Next.js based e-commerce platform with real-time inventory",
         status: "ON_TRACK",
         ownerId: manager1.id,
         teamId: frontendTeam.id,
@@ -335,7 +338,8 @@ async function seed() {
         status: "COMPLETED",
         velocity: 42,
         capacityHours: 320,
-        retrospectiveNotes: "Great sprint! Delivered all planned features. Need to improve code review turnaround time.",
+        retrospectiveNotes:
+          "Great sprint! Delivered all planned features. Need to improve code review turnaround time.",
       },
     });
 
@@ -384,7 +388,8 @@ async function seed() {
         // Sprint 2 (Active) - Frontend Team
         {
           title: "Design user dashboard layout",
-          description: "Create responsive dashboard with sidebar navigation and widget system",
+          description:
+            "Create responsive dashboard with sidebar navigation and widget system",
           status: "DONE",
           priority: "HIGH",
           projectId: project1.id,
@@ -395,7 +400,8 @@ async function seed() {
           estimatedHours: 16,
           actualHours: 14,
           tags: JSON.stringify(["ui", "dashboard", "design"]),
-          acceptanceCriteria: "Dashboard responsive on all devices, sidebar collapsible",
+          acceptanceCriteria:
+            "Dashboard responsive on all devices, sidebar collapsible",
           startedAt: new Date("2024-12-02"),
           completedAt: new Date("2024-12-05"),
         },
@@ -411,12 +417,14 @@ async function seed() {
           storyPoints: 8,
           estimatedHours: 24,
           tags: JSON.stringify(["analytics", "charts", "visualization"]),
-          acceptanceCriteria: "Show revenue, user growth, and engagement metrics",
+          acceptanceCriteria:
+            "Show revenue, user growth, and engagement metrics",
           startedAt: new Date("2024-12-03"),
         },
         {
           title: "Build user settings page",
-          description: "Profile settings with theme switcher and notification preferences",
+          description:
+            "Profile settings with theme switcher and notification preferences",
           status: "IN_REVIEW",
           priority: "MEDIUM",
           projectId: project1.id,
@@ -473,7 +481,8 @@ async function seed() {
         },
         {
           title: "API rate limiting middleware",
-          description: "Implement rate limiting with Redis and token bucket algorithm",
+          description:
+            "Implement rate limiting with Redis and token bucket algorithm",
           status: "IN_REVIEW",
           priority: "HIGH",
           projectId: project2.id,
@@ -524,7 +533,8 @@ async function seed() {
         // Tasks for your account
         {
           title: "Implement Timesheet Module",
-          description: "Build complete timesheet management with entry tracking and approval workflow",
+          description:
+            "Build complete timesheet management with entry tracking and approval workflow",
           status: "DONE",
           priority: "HIGH",
           projectId: project1.id,
@@ -540,7 +550,8 @@ async function seed() {
         },
         {
           title: "Build Task Management Dashboard",
-          description: "Create employee task dashboard with filters, search, and status updates",
+          description:
+            "Create employee task dashboard with filters, search, and status updates",
           status: "DONE",
           priority: "HIGH",
           projectId: project1.id,
@@ -556,7 +567,8 @@ async function seed() {
         },
         {
           title: "Performance Metrics Integration",
-          description: "Integrate performance tracking with real-time metrics display",
+          description:
+            "Integrate performance tracking with real-time metrics display",
           status: "IN_PROGRESS",
           priority: "MEDIUM",
           projectId: project1.id,
@@ -571,7 +583,8 @@ async function seed() {
         },
         {
           title: "Goals Tracking Feature",
-          description: "Add goal creation, progress tracking, and completion workflow",
+          description:
+            "Add goal creation, progress tracking, and completion workflow",
           status: "IN_REVIEW",
           priority: "MEDIUM",
           projectId: project2.id,
@@ -586,7 +599,8 @@ async function seed() {
         },
         {
           title: "Calendar View Implementation",
-          description: "Build monthly calendar with event filtering and date selection",
+          description:
+            "Build monthly calendar with event filtering and date selection",
           status: "TODO",
           priority: "LOW",
           projectId: project1.id,
@@ -600,7 +614,8 @@ async function seed() {
         },
         {
           title: "Fix Login Authentication Bug",
-          description: "Resolve session timeout issue causing premature logouts",
+          description:
+            "Resolve session timeout issue causing premature logouts",
           status: "BLOCKED",
           priority: "URGENT",
           projectId: project2.id,
@@ -799,7 +814,7 @@ async function seed() {
     const lastWeek = new Date("2024-11-25");
     const previousWeek = new Date("2024-12-02");
     const currentWeek = new Date("2024-12-09"); // This week (for current testing)
-    
+
     const timesheet1 = await prisma.timesheet.create({
       data: {
         userId: emp1.id,
@@ -811,11 +826,40 @@ async function seed() {
         approvedAt: new Date("2024-12-02"),
         entries: {
           create: [
-            { date: new Date("2024-11-25"), projectId: project1.id, hours: 8, description: "Dashboard UI development", billable: true },
-            { date: new Date("2024-11-26"), projectId: project1.id, hours: 8, description: "Dashboard UI development", billable: true },
-            { date: new Date("2024-11-27"), projectId: project1.id, hours: 7, description: "Code review and bug fixes", billable: true },
-            { date: new Date("2024-11-28"), projectId: project1.id, hours: 8, description: "Testing and documentation", billable: true },
-            { date: new Date("2024-11-29"), hours: 9, description: "Team meeting and planning", billable: false },
+            {
+              date: new Date("2024-11-25"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Dashboard UI development",
+              billable: true,
+            },
+            {
+              date: new Date("2024-11-26"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Dashboard UI development",
+              billable: true,
+            },
+            {
+              date: new Date("2024-11-27"),
+              projectId: project1.id,
+              hours: 7,
+              description: "Code review and bug fixes",
+              billable: true,
+            },
+            {
+              date: new Date("2024-11-28"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Testing and documentation",
+              billable: true,
+            },
+            {
+              date: new Date("2024-11-29"),
+              hours: 9,
+              description: "Team meeting and planning",
+              billable: false,
+            },
           ],
         },
       },
@@ -830,12 +874,46 @@ async function seed() {
         status: "SUBMITTED",
         entries: {
           create: [
-            { date: new Date("2024-12-02"), projectId: project1.id, hours: 7, description: "Analytics charts implementation", billable: true },
-            { date: new Date("2024-12-03"), projectId: project1.id, hours: 8, description: "Analytics charts implementation", billable: true },
-            { date: new Date("2024-12-04"), projectId: project1.id, hours: 8, description: "Chart.js integration", billable: true },
-            { date: new Date("2024-12-05"), hours: 1, description: "Sick leave", billable: false },
-            { date: new Date("2024-12-06"), projectId: project1.id, hours: 6, description: "Testing and bug fixes", billable: true },
-            { date: new Date("2024-12-07"), hours: 5, description: "Weekend work - urgent bug fix", billable: true },
+            {
+              date: new Date("2024-12-02"),
+              projectId: project1.id,
+              hours: 7,
+              description: "Analytics charts implementation",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-03"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Analytics charts implementation",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-04"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Chart.js integration",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-05"),
+              hours: 1,
+              description: "Sick leave",
+              billable: false,
+            },
+            {
+              date: new Date("2024-12-06"),
+              projectId: project1.id,
+              hours: 6,
+              description: "Testing and bug fixes",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-07"),
+              hours: 5,
+              description: "Weekend work - urgent bug fix",
+              billable: true,
+            },
           ],
         },
       },
@@ -850,11 +928,41 @@ async function seed() {
         status: "SUBMITTED",
         entries: {
           create: [
-            { date: new Date("2024-12-02"), projectId: project2.id, hours: 8, description: "Redis caching implementation", billable: true },
-            { date: new Date("2024-12-03"), projectId: project2.id, hours: 9, description: "Redis caching implementation", billable: true },
-            { date: new Date("2024-12-04"), projectId: project2.id, hours: 8, description: "Cache invalidation logic", billable: true },
-            { date: new Date("2024-12-05"), projectId: project2.id, hours: 8, description: "Testing and optimization", billable: true },
-            { date: new Date("2024-12-06"), projectId: project2.id, hours: 9, description: "Documentation and code review", billable: true },
+            {
+              date: new Date("2024-12-02"),
+              projectId: project2.id,
+              hours: 8,
+              description: "Redis caching implementation",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-03"),
+              projectId: project2.id,
+              hours: 9,
+              description: "Redis caching implementation",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-04"),
+              projectId: project2.id,
+              hours: 8,
+              description: "Cache invalidation logic",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-05"),
+              projectId: project2.id,
+              hours: 8,
+              description: "Testing and optimization",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-06"),
+              projectId: project2.id,
+              hours: 9,
+              description: "Documentation and code review",
+              billable: true,
+            },
           ],
         },
       },
@@ -870,10 +978,34 @@ async function seed() {
         status: "DRAFT",
         entries: {
           create: [
-            { date: new Date("2024-12-09"), projectId: project1.id, hours: 8, description: "Working on dashboard analytics integration", billable: true },
-            { date: new Date("2024-12-10"), projectId: project1.id, hours: 7.5, description: "Code review and testing", billable: true },
-            { date: new Date("2024-12-11"), projectId: project3.id, hours: 6, description: "Mobile app API integration", billable: true },
-            { date: new Date("2024-12-12"), projectId: project1.id, hours: 8, description: "Bug fixes and optimization", billable: true },
+            {
+              date: new Date("2024-12-09"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Working on dashboard analytics integration",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-10"),
+              projectId: project1.id,
+              hours: 7.5,
+              description: "Code review and testing",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-11"),
+              projectId: project3.id,
+              hours: 6,
+              description: "Mobile app API integration",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-12"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Bug fixes and optimization",
+              billable: true,
+            },
           ],
         },
       },
@@ -891,11 +1023,41 @@ async function seed() {
         approvedAt: new Date("2024-12-02"),
         entries: {
           create: [
-            { date: new Date("2024-11-25"), projectId: project1.id, hours: 8, description: "Timesheet module backend development", billable: true },
-            { date: new Date("2024-11-26"), projectId: project1.id, hours: 9, description: "Timesheet UI implementation", billable: true },
-            { date: new Date("2024-11-27"), projectId: project1.id, hours: 8, description: "Testing and bug fixes", billable: true },
-            { date: new Date("2024-11-28"), projectId: project1.id, hours: 8, description: "Task dashboard development", billable: true },
-            { date: new Date("2024-11-29"), projectId: project1.id, hours: 9, description: "Code review and documentation", billable: true },
+            {
+              date: new Date("2024-11-25"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Timesheet module backend development",
+              billable: true,
+            },
+            {
+              date: new Date("2024-11-26"),
+              projectId: project1.id,
+              hours: 9,
+              description: "Timesheet UI implementation",
+              billable: true,
+            },
+            {
+              date: new Date("2024-11-27"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Testing and bug fixes",
+              billable: true,
+            },
+            {
+              date: new Date("2024-11-28"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Task dashboard development",
+              billable: true,
+            },
+            {
+              date: new Date("2024-11-29"),
+              projectId: project1.id,
+              hours: 9,
+              description: "Code review and documentation",
+              billable: true,
+            },
           ],
         },
       },
@@ -910,11 +1072,41 @@ async function seed() {
         status: "SUBMITTED",
         entries: {
           create: [
-            { date: new Date("2024-12-02"), projectId: project1.id, hours: 8, description: "Performance metrics integration", billable: true },
-            { date: new Date("2024-12-03"), projectId: project2.id, hours: 7, description: "Goals tracking feature", billable: true },
-            { date: new Date("2024-12-04"), projectId: project1.id, hours: 8, description: "Task management improvements", billable: true },
-            { date: new Date("2024-12-05"), projectId: project2.id, hours: 7, description: "Goals UI and backend work", billable: true },
-            { date: new Date("2024-12-06"), projectId: project1.id, hours: 8, description: "Code review and testing", billable: true },
+            {
+              date: new Date("2024-12-02"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Performance metrics integration",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-03"),
+              projectId: project2.id,
+              hours: 7,
+              description: "Goals tracking feature",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-04"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Task management improvements",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-05"),
+              projectId: project2.id,
+              hours: 7,
+              description: "Goals UI and backend work",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-06"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Code review and testing",
+              billable: true,
+            },
           ],
         },
       },
@@ -929,10 +1121,34 @@ async function seed() {
         status: "DRAFT",
         entries: {
           create: [
-            { date: new Date("2024-12-09"), projectId: project1.id, hours: 8, description: "Performance metrics dashboard", billable: true },
-            { date: new Date("2024-12-10"), projectId: project1.id, hours: 8, description: "Calendar view development", billable: true },
-            { date: new Date("2024-12-11"), projectId: project2.id, hours: 8, description: "Authentication bug investigation", billable: true },
-            { date: new Date("2024-12-12"), projectId: project1.id, hours: 8, description: "Code review and optimization", billable: true },
+            {
+              date: new Date("2024-12-09"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Performance metrics dashboard",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-10"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Calendar view development",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-11"),
+              projectId: project2.id,
+              hours: 8,
+              description: "Authentication bug investigation",
+              billable: true,
+            },
+            {
+              date: new Date("2024-12-12"),
+              projectId: project1.id,
+              hours: 8,
+              description: "Code review and optimization",
+              billable: true,
+            },
           ],
         },
       },
@@ -947,7 +1163,8 @@ async function seed() {
         {
           userId: emp1.id,
           title: "Master TypeScript Advanced Patterns",
-          description: "Deep dive into advanced TypeScript patterns and generics",
+          description:
+            "Deep dive into advanced TypeScript patterns and generics",
           targetDate: new Date("2025-03-31"),
           progress: 45,
           status: "active",
@@ -955,7 +1172,8 @@ async function seed() {
         {
           userId: emp2.id,
           title: "Contribute to Open Source",
-          description: "Make 10 meaningful contributions to open source projects",
+          description:
+            "Make 10 meaningful contributions to open source projects",
           targetDate: new Date("2025-06-30"),
           progress: 20,
           status: "active",
@@ -963,7 +1181,8 @@ async function seed() {
         {
           userId: lead1.id,
           title: "Improve Team Code Quality",
-          description: "Reduce bug count by 30% through better code review practices",
+          description:
+            "Reduce bug count by 30% through better code review practices",
           targetDate: new Date("2025-02-28"),
           progress: 60,
           status: "active",
@@ -972,7 +1191,8 @@ async function seed() {
         {
           userId: userEmail.id,
           title: "Learn React Performance Optimization",
-          description: "Master React performance patterns including memoization, code splitting, and lazy loading",
+          description:
+            "Master React performance patterns including memoization, code splitting, and lazy loading",
           targetDate: new Date("2025-04-30"),
           progress: 35,
           status: "active",
@@ -988,7 +1208,8 @@ async function seed() {
         {
           userId: userEmail.id,
           title: "Deliver Major Feature",
-          description: "Successfully deliver the new reporting dashboard feature",
+          description:
+            "Successfully deliver the new reporting dashboard feature",
           targetDate: new Date("2025-02-28"),
           progress: 80,
           status: "active",
@@ -996,7 +1217,8 @@ async function seed() {
         {
           userId: userEmail.id,
           title: "Mentor Junior Developers",
-          description: "Mentor 2 junior developers and help them grow their skills",
+          description:
+            "Mentor 2 junior developers and help them grow their skills",
           targetDate: new Date("2025-12-31"),
           progress: 25,
           status: "active",
@@ -1131,7 +1353,11 @@ async function seed() {
           employeeId: emp1.id,
           scheduledAt: new Date("2024-12-10T10:00:00"),
           duration: 30,
-          topics: JSON.stringify(["Career goals", "Project feedback", "Skill development"]),
+          topics: JSON.stringify([
+            "Career goals",
+            "Project feedback",
+            "Skill development",
+          ]),
           completed: false,
         },
         {
@@ -1139,9 +1365,13 @@ async function seed() {
           employeeId: emp2.id,
           scheduledAt: new Date("2024-12-05T14:00:00"),
           duration: 30,
-          notes: "Discussed analytics project progress. Employee doing great work. Interested in learning more about data visualization.",
+          notes:
+            "Discussed analytics project progress. Employee doing great work. Interested in learning more about data visualization.",
           topics: JSON.stringify(["Project status", "Learning opportunities"]),
-          actionItems: JSON.stringify(["Enroll in data visualization course", "Shadow senior developer next sprint"]),
+          actionItems: JSON.stringify([
+            "Enroll in data visualization course",
+            "Shadow senior developer next sprint",
+          ]),
           completed: true,
         },
         {
@@ -1149,7 +1379,11 @@ async function seed() {
           employeeId: emp4.id,
           scheduledAt: new Date("2024-12-12T15:00:00"),
           duration: 45,
-          topics: JSON.stringify(["Performance review", "Promotion discussion", "Team dynamics"]),
+          topics: JSON.stringify([
+            "Performance review",
+            "Promotion discussion",
+            "Team dynamics",
+          ]),
           completed: false,
         },
       ],
@@ -1159,7 +1393,7 @@ async function seed() {
 
     // Create Appraisal Cycle
     console.log("📋 Creating appraisal cycles...");
-    
+
     // Previous completed cycle
     const previousCycle = await prisma.appraisalCycle.create({
       data: {
@@ -1176,8 +1410,10 @@ async function seed() {
         {
           cycleId: previousCycle.id,
           userId: userEmail.id,
-          selfReview: "Successfully onboarded to the team and completed initial training. Made good progress on understanding the codebase and contributed to bug fixes.",
-          managerReview: "Good start to the team. Shows potential and willingness to learn. Recommend focusing on coding standards in Q4.",
+          selfReview:
+            "Successfully onboarded to the team and completed initial training. Made good progress on understanding the codebase and contributed to bug fixes.",
+          managerReview:
+            "Good start to the team. Shows potential and willingness to learn. Recommend focusing on coding standards in Q4.",
           rating: 3.5,
           finalRating: 3.5,
           status: "COMPLETED",
@@ -1203,8 +1439,10 @@ async function seed() {
         {
           cycleId: appraisalCycle.id,
           userId: emp1.id,
-          selfReview: "Strong quarter with successful delivery of dashboard features. Improved code quality and mentored junior developers.",
-          managerReview: "Excellent performance. Consistently delivers high-quality work and shows leadership potential.",
+          selfReview:
+            "Strong quarter with successful delivery of dashboard features. Improved code quality and mentored junior developers.",
+          managerReview:
+            "Excellent performance. Consistently delivers high-quality work and shows leadership potential.",
           rating: 4.5,
           finalRating: 4.5,
           status: "COMPLETED",
@@ -1214,7 +1452,8 @@ async function seed() {
         {
           cycleId: appraisalCycle.id,
           userId: emp2.id,
-          selfReview: "Made good progress on analytics features. Need to improve estimation accuracy.",
+          selfReview:
+            "Made good progress on analytics features. Need to improve estimation accuracy.",
           status: "IN_PROGRESS",
           submittedAt: new Date("2024-12-06"),
         },
@@ -1226,7 +1465,8 @@ async function seed() {
         {
           cycleId: appraisalCycle.id,
           userId: userEmail.id,
-          selfReview: "Great quarter with significant contributions to project management features. Successfully delivered timesheet and task management modules. Actively pursuing AWS certification and showing improvement in code quality.",
+          selfReview:
+            "Great quarter with significant contributions to project management features. Successfully delivered timesheet and task management modules. Actively pursuing AWS certification and showing improvement in code quality.",
           rating: 4.0,
           status: "IN_PROGRESS",
           submittedAt: new Date("2024-12-07"),
@@ -1268,20 +1508,46 @@ async function seed() {
     console.log("\n🎉 Database seeded successfully!\n");
     console.log("📧 Test Accounts Created:");
     console.log("┌─────────────────────────────────────────────────────────┐");
-    console.log("│ Role     │ Email                  │ Password                │");
+    console.log(
+      "│ Role     │ Email                  │ Password                │"
+    );
     console.log("├─────────────────────────────────────────────────────────┤");
-    console.log("│ Admin    │ admin@company.com      │ password123             │");
-    console.log("│ Manager  │ manager1@company.com   │ password123             │");
-    console.log("│ Manager  │ manager2@company.com   │ password123             │");
-    console.log("│ Lead     │ lead1@company.com      │ password123             │");
-    console.log("│ Lead     │ lead2@company.com      │ password123             │");
-    console.log("│ Employee │ psivadurgaprasad88@... │ (your account)          │");
-    console.log("│ Employee │ dev1@company.com       │ password123             │");
-    console.log("│ Employee │ dev2@company.com       │ password123             │");
-    console.log("│ Employee │ dev3@company.com       │ password123             │");
-    console.log("│ Employee │ dev4@company.com       │ password123             │");
-    console.log("│ Employee │ dev5@company.com       │ password123             │");
-    console.log("└─────────────────────────────────────────────────────────┘\n");
+    console.log(
+      "│ Admin    │ admin@company.com      │ password123             │"
+    );
+    console.log(
+      "│ Manager  │ manager1@company.com   │ password123             │"
+    );
+    console.log(
+      "│ Manager  │ manager2@company.com   │ password123             │"
+    );
+    console.log(
+      "│ Lead     │ lead1@company.com      │ password123             │"
+    );
+    console.log(
+      "│ Lead     │ lead2@company.com      │ password123             │"
+    );
+    console.log(
+      "│ Employee │ psivadurgaprasad88@... │ (your account)          │"
+    );
+    console.log(
+      "│ Employee │ dev1@company.com       │ password123             │"
+    );
+    console.log(
+      "│ Employee │ dev2@company.com       │ password123             │"
+    );
+    console.log(
+      "│ Employee │ dev3@company.com       │ password123             │"
+    );
+    console.log(
+      "│ Employee │ dev4@company.com       │ password123             │"
+    );
+    console.log(
+      "│ Employee │ dev5@company.com       │ password123             │"
+    );
+    console.log(
+      "└─────────────────────────────────────────────────────────┘\n"
+    );
     console.log("📊 Data Summary:");
     console.log("  - 2 Departments");
     console.log("  - 3 Teams");
@@ -1292,13 +1558,16 @@ async function seed() {
     console.log("  - 3 Code Reviews");
     console.log("  - 7 Technical Metrics");
     console.log("  - 5 PTO Requests");
-    console.log("  - 7 Timesheets (3 for your account: 1 DRAFT, 1 SUBMITTED, 1 APPROVED)");
+    console.log(
+      "  - 7 Timesheets (3 for your account: 1 DRAFT, 1 SUBMITTED, 1 APPROVED)"
+    );
     console.log("  - 8 Goals (5 for your account including 1 completed)");
-    console.log("  - 12 Performance Metrics (12 for your account across 4 months)");
+    console.log(
+      "  - 12 Performance Metrics (12 for your account across 4 months)"
+    );
     console.log("  - 3 1:1 Meetings");
     console.log("  - 2 Appraisal Cycles with 5 Reviews (2 for your account)");
     console.log("  - 3 Audit Logs\n");
-
   } catch (error) {
     console.error("❌ Error seeding database:", error);
     throw error;

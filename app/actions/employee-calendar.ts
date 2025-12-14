@@ -1,8 +1,8 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import { prisma as prismaClient } from '@/lib/prisma';
-import type { PrismaClient } from '@prisma/client';
+import { auth } from "@/lib/auth";
+import { prisma as prismaClient } from "@/lib/prisma";
+import type { PrismaClient } from "@prisma/client";
 
 // Type assertion for prisma
 const prisma = prismaClient as PrismaClient;
@@ -10,7 +10,7 @@ const prisma = prismaClient as PrismaClient;
 interface CalendarEvent {
   id: string;
   title: string;
-  type: 'task' | 'meeting' | 'deadline' | 'milestone' | 'appraisal' | 'pto';
+  type: "task" | "meeting" | "deadline" | "milestone" | "appraisal" | "pto";
   date: Date;
   time?: string;
   priority?: string;
@@ -24,9 +24,9 @@ interface CalendarEvent {
 export async function getMyCalendarEvents(startDate?: Date, endDate?: Date) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const start = startDate || new Date();
@@ -76,7 +76,7 @@ export async function getMyCalendarEvents(startDate?: Date, endDate?: Date) {
     const ptoRequests = await prisma.pTORequest.findMany({
       where: {
         userId: session.user.id,
-        status: 'APPROVED',
+        status: "APPROVED",
         OR: [
           {
             startDate: {
@@ -102,34 +102,34 @@ export async function getMyCalendarEvents(startDate?: Date, endDate?: Date) {
         .map((t: any) => ({
           id: `task-${t.id}`,
           title: t.title,
-          type: 'task' as const,
+          type: "task" as const,
           date: t.dueDate!,
           priority: t.priority || undefined,
           status: t.status || undefined,
           description: t.description || undefined,
         })),
-      
+
       // Appraisals
       ...appraisals.map((a: any) => ({
         id: `appraisal-${a.id}`,
         title: `Appraisal: ${a.cycle.name}`,
-        type: 'appraisal' as const,
+        type: "appraisal" as const,
         date: a.cycle.endDate,
         status: a.status,
       })),
-      
+
       // PTO
       ...ptoRequests.flatMap((pto: any) => {
         const events: CalendarEvent[] = [];
         const currentDate = new Date(pto.startDate);
         const endDate = new Date(pto.endDate);
-        
+
         while (currentDate <= endDate) {
           if (currentDate >= start && currentDate <= end) {
             events.push({
               id: `pto-${pto.id}-${currentDate.toISOString()}`,
               title: `PTO: ${pto.type}`,
-              type: 'pto' as const,
+              type: "pto" as const,
               date: new Date(currentDate),
               status: pto.status,
               description: pto.reason || undefined,
@@ -137,7 +137,7 @@ export async function getMyCalendarEvents(startDate?: Date, endDate?: Date) {
           }
           currentDate.setDate(currentDate.getDate() + 1);
         }
-        
+
         return events;
       }),
     ];
@@ -147,8 +147,8 @@ export async function getMyCalendarEvents(startDate?: Date, endDate?: Date) {
 
     return { success: true, data: events };
   } catch (error) {
-    console.error('Error fetching calendar events:', error);
-    return { success: false, error: 'Failed to fetch calendar events' };
+    console.error("Error fetching calendar events:", error);
+    return { success: false, error: "Failed to fetch calendar events" };
   }
 }
 
@@ -158,24 +158,24 @@ export async function getMyCalendarEvents(startDate?: Date, endDate?: Date) {
 export async function getEventsForDate(date: string) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const targetDate = new Date(date);
     const startOfDay = new Date(targetDate);
     startOfDay.setHours(0, 0, 0, 0);
-    
+
     const endOfDay = new Date(targetDate);
     endOfDay.setHours(23, 59, 59, 999);
 
     const result = await getMyCalendarEvents(startOfDay, endOfDay);
-    
+
     return result;
   } catch (error) {
-    console.error('Error fetching events for date:', error);
-    return { success: false, error: 'Failed to fetch events for date' };
+    console.error("Error fetching events for date:", error);
+    return { success: false, error: "Failed to fetch events for date" };
   }
 }
 
@@ -185,22 +185,22 @@ export async function getEventsForDate(date: string) {
 export async function getUpcomingEvents() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const nextWeek = new Date(today);
     nextWeek.setDate(today.getDate() + 7);
     nextWeek.setHours(23, 59, 59, 999);
 
     return await getMyCalendarEvents(today, nextWeek);
   } catch (error) {
-    console.error('Error fetching upcoming events:', error);
-    return { success: false, error: 'Failed to fetch upcoming events' };
+    console.error("Error fetching upcoming events:", error);
+    return { success: false, error: "Failed to fetch upcoming events" };
   }
 }
 
@@ -210,9 +210,9 @@ export async function getUpcomingEvents() {
 export async function getMonthEvents(year: number, month: number) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const startOfMonth = new Date(year, month, 1, 0, 0, 0, 0);
@@ -220,8 +220,8 @@ export async function getMonthEvents(year: number, month: number) {
 
     return await getMyCalendarEvents(startOfMonth, endOfMonth);
   } catch (error) {
-    console.error('Error fetching month events:', error);
-    return { success: false, error: 'Failed to fetch month events' };
+    console.error("Error fetching month events:", error);
+    return { success: false, error: "Failed to fetch month events" };
   }
 }
 
@@ -231,14 +231,14 @@ export async function getMonthEvents(year: number, month: number) {
 export async function getCalendarStats() {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const nextWeek = new Date(today);
     nextWeek.setDate(today.getDate() + 7);
 
@@ -264,7 +264,7 @@ export async function getCalendarStats() {
       prisma.task.count({
         where: {
           assigneeId: session.user.id,
-          status: { not: 'DONE' },
+          status: { not: "DONE" },
           dueDate: {
             gte: today,
             lte: nextWeek,
@@ -282,8 +282,8 @@ export async function getCalendarStats() {
       },
     };
   } catch (error) {
-    console.error('Error fetching calendar stats:', error);
-    return { success: false, error: 'Failed to fetch calendar statistics' };
+    console.error("Error fetching calendar stats:", error);
+    return { success: false, error: "Failed to fetch calendar statistics" };
   }
 }
 
@@ -293,9 +293,9 @@ export async function getCalendarStats() {
 export async function checkPTOForDate(date: string) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
-      return { success: false, error: 'Unauthorized' };
+      return { success: false, error: "Unauthorized" };
     }
 
     const targetDate = new Date(date);
@@ -303,18 +303,18 @@ export async function checkPTOForDate(date: string) {
     const ptoRequest = await prisma.pTORequest.findFirst({
       where: {
         userId: session.user.id,
-        status: 'APPROVED',
+        status: "APPROVED",
         startDate: { lte: targetDate },
         endDate: { gte: targetDate },
       },
     });
 
-    return { 
-      success: true, 
-      data: ptoRequest ? { hasPTO: true, pto: ptoRequest } : { hasPTO: false }
+    return {
+      success: true,
+      data: ptoRequest ? { hasPTO: true, pto: ptoRequest } : { hasPTO: false },
     };
   } catch (error) {
-    console.error('Error checking PTO for date:', error);
-    return { success: false, error: 'Failed to check PTO' };
+    console.error("Error checking PTO for date:", error);
+    return { success: false, error: "Failed to check PTO" };
   }
 }
