@@ -1,67 +1,132 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FileText, Clock, CheckCircle, AlertCircle } from 'lucide-react';
-
-interface Appraisal {
-  id: string;
-  period: string;
-  year: number;
-  status: 'draft' | 'submitted' | 'under-review' | 'completed';
-  selfRating: number;
-  managerRating?: number;
-  submittedDate?: string;
-  reviewDate?: string;
-}
-
-const mockAppraisals: Appraisal[] = [
-  {
-    id: '1',
-    period: 'H2',
-    year: 2025,
-    status: 'draft',
-    selfRating: 0,
-    submittedDate: undefined
-  },
-  {
-    id: '2',
-    period: 'H1',
-    year: 2025,
-    status: 'completed',
-    selfRating: 4.5,
-    managerRating: 4.7,
-    submittedDate: '2025-06-15',
-    reviewDate: '2025-07-01'
-  },
-  {
-    id: '3',
-    period: 'H2',
-    year: 2024,
-    status: 'completed',
-    selfRating: 4.2,
-    managerRating: 4.5,
-    submittedDate: '2024-12-15',
-    reviewDate: '2025-01-05'
-  }
-];
+import { FileText, Clock, CheckCircle, AlertCircle, Loader2, Save } from 'lucide-react';
+import { 
+  getMyAppraisals, 
+  getCurrentAppraisal, 
+  getAppraisalStats,
+  updateSelfReview,
+  submitAppraisal 
+} from '@/app/actions/employee-appraisal';
 
 export default function AppraisalPage() {
-  const [appraisals] = useState<Appraisal[]>(mockAppraisals);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [currentAppraisal, setCurrentAppraisal] = useState<any>(null);
+  const [pastAppraisals, setPastAppraisals] = useState<any[]>([]);
+  const [stats, setStats] = useState({
+    total: 0,
+    draft: 0,
+    inProgress: 0,
+    completed: 0,
+    avgRating: 0,
+  });
+
+  // Form state
+  const [selfReview, setSelfReview] = useState('');
+  const [rating, setRating] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [currentRes, appraisalsRes, statsRes] = await Promise.all([
+        getCurrentAppraisal(),
+        getMyAppraisals(),
+        getAppraisalStats(),
+      ]);
+
+      if (currentRes.success && currentRes.data) {
+        setCurrentAppraisal(currentRes.data);
+        setSelfReview(currentRes.data.selfReview || '');
+        setRating(currentRes.data.rating || undefined);
+      }
+
+      if (appraisalsRes.success && appraisalsRes.data) {
+        setPastAppraisals(appraisalsRes.data);
+      }
+
+      if (statsRes.success && statsRes.data) {
+        setStats(statsRes.data);
+      }
+    } catch (error) {
+      console.error('Error loading appraisal data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    if (!currentAppraisal) return;
+
+    setSaving(true);
+    try {
+      const result = await updateSelfReview(currentAppraisal.id, selfReview, rating);
+      if (result.success) {
+        alert('Draft saved successfully!');
+        loadData();
+      } else {
+        alert(result.error || 'Failed to save draft');
+      }
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      alert('Failed to save draft');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!currentAppraisal) return;
+
+    if (!selfReview.trim()) {
+      alert('Please complete your self-review before submitting');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const result = await submitAppraisal(currentAppraisal.id);
+      if (result.success) {
+        alert('Appraisal submitted successfully!');
+        loadData();
+      } else {
+        alert(result.error || 'Failed to submit appraisal');
+      }
+    } catch (error) {
+      console.error('Error submitting appraisal:', error);
+      alert('Failed to submit appraisal');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     const config = {
-      draft: { variant: 'secondary' as const, label: 'Draft', icon: FileText },
-      submitted: { variant: 'default' as const, label: 'Submitted', icon: Clock },
-      'under-review': { variant: 'default' as const, label: 'Under Review', icon: AlertCircle },
-      completed: { variant: 'default' as const, label: 'Completed', icon: CheckCircle }
+      DRAFT: { variant: 'secondary' as const, label: 'Draft', icon: FileText },
+      IN_PROGRESS: { variant: 'default' as const, label: 'In Progress', icon: Clock },
+      UNDER_REVIEW: { variant: 'default' as const, label: 'Under Review', icon: AlertCircle },
+      COMPLETED: { variant: 'default' as const, label: 'Completed', icon: CheckCircle }
     };
-    return config[status as keyof typeof config] || config.draft;
+    return config[status as keyof typeof config] || config.DRAFT;
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -73,7 +138,6 @@ export default function AppraisalPage() {
             Manage your performance reviews and development plans
           </p>
         </div>
-        <Button>Start New Appraisal</Button>
       </div>
 
       {/* Stats */}
@@ -85,7 +149,7 @@ export default function AppraisalPage() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Reviews</p>
-              <p className="text-3xl font-bold">{appraisals.length}</p>
+              <p className="text-3xl font-bold">{stats.total}</p>
             </div>
           </div>
         </Card>
@@ -98,7 +162,7 @@ export default function AppraisalPage() {
             <div>
               <p className="text-sm text-gray-600">Pending</p>
               <p className="text-3xl font-bold">
-                {appraisals.filter(a => a.status === 'draft' || a.status === 'submitted').length}
+                {stats.draft + stats.inProgress}
               </p>
             </div>
           </div>
@@ -112,7 +176,7 @@ export default function AppraisalPage() {
             <div>
               <p className="text-sm text-gray-600">Completed</p>
               <p className="text-3xl font-bold">
-                {appraisals.filter(a => a.status === 'completed').length}
+                {stats.completed}
               </p>
             </div>
           </div>
@@ -125,187 +189,211 @@ export default function AppraisalPage() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Avg Rating</p>
-              <p className="text-3xl font-bold">4.6</p>
+              <p className="text-3xl font-bold">
+                {stats.avgRating > 0 ? stats.avgRating.toFixed(1) : 'N/A'}
+              </p>
             </div>
           </div>
         </Card>
       </div>
 
       {/* Current Appraisal */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-semibold text-xl">Current Appraisal - H2 2025</h3>
-          <Badge variant="secondary">Draft</Badge>
-        </div>
-
-        <div className="space-y-6">
-          {/* Self-Assessment */}
-          <div>
-            <h4 className="font-semibold mb-4">Self-Assessment</h4>
-            <div className="space-y-4">
-              <div>
-                <Label>Key Achievements</Label>
-                <textarea
-                  className="w-full p-3 border rounded min-h-32 mt-2"
-                  placeholder="Describe your key achievements during this period..."
-                />
-              </div>
-              <div>
-                <Label>Challenges Faced</Label>
-                <textarea
-                  className="w-full p-3 border rounded min-h-32 mt-2"
-                  placeholder="What challenges did you encounter and how did you address them?"
-                />
-              </div>
-              <div>
-                <Label>Areas for Development</Label>
-                <textarea
-                  className="w-full p-3 border rounded min-h-32 mt-2"
-                  placeholder="What areas would you like to improve or develop?"
-                />
-              </div>
-              <div>
-                <Label>Career Goals</Label>
-                <textarea
-                  className="w-full p-3 border rounded min-h-32 mt-2"
-                  placeholder="What are your short-term and long-term career goals?"
-                />
-              </div>
-            </div>
+      {currentAppraisal && (
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-semibold text-xl">
+              Current Appraisal - {currentAppraisal.cycle?.name}
+            </h3>
+            <Badge variant={getStatusBadge(currentAppraisal.status).variant}>
+              {getStatusBadge(currentAppraisal.status).label}
+            </Badge>
           </div>
 
-          {/* Competencies Rating */}
-          <div>
-            <h4 className="font-semibold mb-4">Competencies Self-Rating</h4>
-            <div className="space-y-3">
-              {[
-                'Technical Skills',
-                'Communication',
-                'Problem Solving',
-                'Teamwork',
-                'Initiative',
-                'Time Management'
-              ].map((competency) => (
-                <div key={competency} className="flex items-center justify-between p-3 border rounded">
-                  <span>{competency}</span>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((rating) => (
-                      <button
-                        key={rating}
-                        className="w-10 h-10 rounded border hover:bg-blue-100 hover:border-blue-300 transition-colors"
-                      >
-                        {rating}
-                      </button>
-                    ))}
+          {currentAppraisal.status === 'DRAFT' ? (
+            <div className="space-y-6">
+              {/* Self-Assessment */}
+              <div>
+                <h4 className="font-semibold mb-4">Self-Review</h4>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Self-Assessment</Label>
+                    <textarea
+                      className="w-full p-3 border rounded min-h-48 mt-2"
+                      placeholder="Describe your achievements, challenges faced, areas for development, and career goals..."
+                      value={selfReview}
+                      onChange={(e) => setSelfReview(e.target.value)}
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Overall Rating */}
-          <div>
-            <Label>Overall Self-Rating</Label>
-            <div className="flex items-center gap-4 mt-2">
-              <select className="p-2 border rounded">
-                <option>Select rating...</option>
-                <option>5 - Outstanding</option>
-                <option>4 - Exceeds Expectations</option>
-                <option>3 - Meets Expectations</option>
-                <option>2 - Needs Improvement</option>
-                <option>1 - Unsatisfactory</option>
-              </select>
-            </div>
-          </div>
+              {/* Overall Rating */}
+              <div>
+                <Label>Overall Self-Rating</Label>
+                <div className="flex items-center gap-4 mt-2">
+                  <select 
+                    className="p-2 border rounded"
+                    value={rating || ''}
+                    onChange={(e) => setRating(e.target.value ? Number(e.target.value) : undefined)}
+                  >
+                    <option value="">Select rating...</option>
+                    <option value="5">5 - Outstanding</option>
+                    <option value="4">4 - Exceeds Expectations</option>
+                    <option value="3">3 - Meets Expectations</option>
+                    <option value="2">2 - Needs Improvement</option>
+                    <option value="1">1 - Unsatisfactory</option>
+                  </select>
+                </div>
+              </div>
 
-          {/* Actions */}
-          <div className="flex gap-2 pt-4 border-t">
-            <Button>Save Draft</Button>
-            <Button variant="outline">Submit for Review</Button>
-            <Button variant="ghost">Cancel</Button>
+              {/* Actions */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button onClick={handleSaveDraft} disabled={saving}>
+                  {saving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Draft
+                    </>
+                  )}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleSubmit}
+                  disabled={submitting || !selfReview.trim()}
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit for Review'
+                  )}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold mb-2">Your Self-Review</h4>
+                <p className="text-gray-700 whitespace-pre-wrap">
+                  {currentAppraisal.selfReview || 'No self-review submitted'}
+                </p>
+              </div>
+              
+              {currentAppraisal.rating && (
+                <div>
+                  <h4 className="font-semibold mb-2">Your Self-Rating</h4>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {currentAppraisal.rating}/5
+                  </p>
+                </div>
+              )}
+
+              {currentAppraisal.managerFeedback && (
+                <div className="mt-6 pt-6 border-t">
+                  <h4 className="font-semibold mb-2">Manager Feedback</h4>
+                  <p className="text-gray-700 whitespace-pre-wrap">
+                    {currentAppraisal.managerFeedback}
+                  </p>
+                </div>
+              )}
+
+              {currentAppraisal.finalRating && (
+                <div className="mt-4">
+                  <h4 className="font-semibold mb-2">Final Rating</h4>
+                  <p className="text-2xl font-bold text-green-600">
+                    {currentAppraisal.finalRating}/5
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </Card>
+      )}
+
+      {!currentAppraisal && (
+        <Card className="p-6">
+          <div className="text-center py-12">
+            <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="font-semibold text-lg mb-2">No Active Appraisal Cycle</h3>
+            <p className="text-gray-600">
+              There is no active appraisal cycle at the moment. Check back later.
+            </p>
           </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       {/* Past Appraisals */}
       <Card className="p-6">
-        <h3 className="font-semibold text-lg mb-4">Past Appraisals</h3>
-        <div className="space-y-3">
-          {appraisals.filter(a => a.status === 'completed').map((appraisal) => {
-            const StatusIcon = getStatusBadge(appraisal.status).icon;
-            return (
-              <div
-                key={appraisal.id}
-                className="p-4 border rounded-lg hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h4 className="font-semibold">
-                        {appraisal.period} {appraisal.year}
-                      </h4>
-                      <Badge variant={getStatusBadge(appraisal.status).variant}>
-                        <StatusIcon className="h-3 w-3 mr-1" />
-                        {getStatusBadge(appraisal.status).label}
-                      </Badge>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
-                      <div>
-                        <span className="font-medium">Self Rating:</span> {appraisal.selfRating}/5
+        <h3 className="font-semibold text-lg mb-4">Appraisal History</h3>
+        {pastAppraisals.length > 0 ? (
+          <div className="space-y-3">
+            {pastAppraisals.map((appraisal) => {
+              const StatusIcon = getStatusBadge(appraisal.status).icon;
+              return (
+                <div
+                  key={appraisal.id}
+                  className="p-4 border rounded-lg hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h4 className="font-semibold">
+                          {appraisal.cycle?.name}
+                        </h4>
+                        <Badge variant={getStatusBadge(appraisal.status).variant}>
+                          <StatusIcon className="h-3 w-3 mr-1" />
+                          {getStatusBadge(appraisal.status).label}
+                        </Badge>
                       </div>
-                      {appraisal.managerRating && (
-                        <div>
-                          <span className="font-medium">Manager Rating:</span> {appraisal.managerRating}/5
-                        </div>
-                      )}
-                      {appraisal.submittedDate && (
-                        <div>
-                          <span className="font-medium">Submitted:</span> {appraisal.submittedDate}
-                        </div>
-                      )}
-                      {appraisal.reviewDate && (
-                        <div>
-                          <span className="font-medium">Reviewed:</span> {appraisal.reviewDate}
+                      <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                        {appraisal.rating && (
+                          <div>
+                            <span className="font-medium">Self Rating:</span> {appraisal.rating}/5
+                          </div>
+                        )}
+                        {appraisal.finalRating && (
+                          <div>
+                            <span className="font-medium">Final Rating:</span> {appraisal.finalRating}/5
+                          </div>
+                        )}
+                        {appraisal.submittedAt && (
+                          <div>
+                            <span className="font-medium">Submitted:</span>{' '}
+                            {new Date(appraisal.submittedAt).toLocaleDateString()}
+                          </div>
+                        )}
+                        {appraisal.completedAt && (
+                          <div>
+                            <span className="font-medium">Completed:</span>{' '}
+                            {new Date(appraisal.completedAt).toLocaleDateString()}
+                          </div>
+                        )}
+                      </div>
+                      {appraisal.selfReview && (
+                        <div className="mt-3 pt-3 border-t">
+                          <p className="text-sm text-gray-700 line-clamp-2">
+                            {appraisal.selfReview}
+                          </p>
                         </div>
                       )}
                     </div>
                   </div>
-                  <Button size="sm" variant="outline">View Details</Button>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
-      {/* Manager Feedback */}
-      <Card className="p-6">
-        <h3 className="font-semibold text-lg mb-4">Latest Manager Feedback</h3>
-        <div className="space-y-4">
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <p className="font-medium mb-2">Strengths</p>
-            <p className="text-sm text-gray-700">
-              Demonstrates excellent technical skills and consistently delivers high-quality work. 
-              Shows strong initiative in taking on challenging projects and mentoring junior team members.
-            </p>
+              );
+            })}
           </div>
-          <div className="p-4 bg-orange-50 rounded-lg">
-            <p className="font-medium mb-2">Areas for Development</p>
-            <p className="text-sm text-gray-700">
-              Could benefit from improving cross-team communication and participating more actively 
-              in architectural discussions. Consider taking on more leadership opportunities.
-            </p>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            No appraisal history found
           </div>
-          <div className="p-4 bg-green-50 rounded-lg">
-            <p className="font-medium mb-2">Development Plan</p>
-            <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
-              <li>Complete advanced communication skills workshop</li>
-              <li>Lead at least one cross-functional project</li>
-              <li>Present technical topics in monthly team meetings</li>
-              <li>Shadow senior architect for system design reviews</li>
-            </ul>
-          </div>
-        </div>
+        )}
       </Card>
     </div>
   );

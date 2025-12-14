@@ -1,242 +1,253 @@
 'use client';
 
-import { useState } from 'react';
-import { Card } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, Target, Award, Clock } from 'lucide-react';
+import { Loader2, TrendingUp, TrendingDown, Target, Clock, CheckCircle2 } from 'lucide-react';
+import {
+  getMyPerformanceMetrics,
+  getTaskCompletionStats,
+  getTimeEstimationAccuracy,
+  getMonthlyPerformanceTrend,
+  getProjectPerformance,
+} from '@/app/actions/employee-performance';
 
 interface PerformanceMetric {
-  label: string;
-  value: number;
-  unit: string;
-  trend: 'up' | 'down' | 'neutral';
-  change: number;
-}
-
-const metrics: PerformanceMetric[] = [
-  { label: 'Tasks Completed', value: 45, unit: 'tasks', trend: 'up', change: 12 },
-  { label: 'On-Time Delivery', value: 92, unit: '%', trend: 'up', change: 5 },
-  { label: 'Avg Cycle Time', value: 2.3, unit: 'days', trend: 'down', change: -15 },
-  { label: 'Quality Score', value: 4.8, unit: '/5', trend: 'up', change: 8 }
-];
-
-interface Achievement {
   id: string;
-  title: string;
-  description: string;
-  date: string;
-  badge: string;
+  metric: string;
+  metricType?: string;
+  value: number;
+  period: string;
+  recordedAt: Date;
+  project: {
+    id: string;
+    name: string;
+  } | null;
 }
 
-const achievements: Achievement[] = [
-  {
-    id: '1',
-    title: 'Sprint Champion',
-    description: 'Completed all sprint tasks on time',
-    date: 'Dec 2025',
-    badge: '🏆'
-  },
-  {
-    id: '2',
-    title: 'Code Quality Pro',
-    description: 'Zero bugs in production for 2 months',
-    date: 'Nov 2025',
-    badge: '⭐'
-  },
-  {
-    id: '3',
-    title: 'Team Player',
-    description: 'Helped 5+ teammates this month',
-    date: 'Nov 2025',
-    badge: '🤝'
-  }
-];
+interface TaskStats {
+  totalTasks: number;
+  completedTasks: number;
+  onTimeTasks: number;
+  completionRate: number;
+  onTimeRate: number;
+}
+
+interface TimeAccuracy {
+  totalEstimated: number;
+  totalActual: number;
+  accuracy: number;
+  variance: number;
+}
+
+interface CodeQuality {
+  totalReviews: number;
+  averageScore: number;
+  issuesFound: number;
+  issuesResolved: number;
+}
+
+interface ProductivityTrend {
+  period: string;
+  tasksCompleted: number;
+  hoursLogged: number;
+  averageTaskTime: number;
+}
 
 export default function PerformancePage() {
-  const [period, setPeriod] = useState<'month' | 'quarter' | 'year'>('month');
+  const [metrics, setMetrics] = useState<PerformanceMetric[]>([]);
+  const [taskStats, setTaskStats] = useState<TaskStats | null>(null);
+  const [timeAccuracy, setTimeAccuracy] = useState<TimeAccuracy | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadAllData();
+  }, []);
+
+  async function loadAllData() {
+    setLoading(true);
+    
+    const [metricsRes, taskRes, timeRes] = await Promise.all([
+      getMyPerformanceMetrics(),
+      getTaskCompletionStats(),
+      getTimeEstimationAccuracy(),
+    ]);
+
+    if (metricsRes.success && metricsRes.data) {
+      setMetrics(metricsRes.data);
+    }
+    if (taskRes.success && taskRes.data) {
+      setTaskStats(taskRes.data);
+    }
+    if (timeRes.success && timeRes.data) {
+      setTimeAccuracy(timeRes.data);
+    }
+
+    setLoading(false);
+  }
+
+  function getScoreColor(score: number) {
+    if (score >= 80) return 'text-green-600';
+    if (score >= 60) return 'text-yellow-600';
+    return 'text-red-600';
+  }
+
+  function getScoreBadge(score: number) {
+    if (score >= 80) return 'bg-green-100 text-green-800';
+    if (score >= 60) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-red-100 text-red-800';
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Performance Dashboard</h1>
-          <p className="text-gray-600">
-            Track your performance metrics and achievements
-          </p>
-        </div>
-        <div className="flex gap-2">
-          {(['month', 'quarter', 'year'] as const).map((p) => (
-            <Button
-              key={p}
-              variant={period === p ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setPeriod(p)}
-            >
-              {p.charAt(0).toUpperCase() + p.slice(1)}
-            </Button>
-          ))}
-        </div>
+    <div className="container mx-auto p-6 space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">My Performance</h1>
+        <p className="text-muted-foreground mt-1">Track your performance metrics and productivity</p>
       </div>
 
-      {/* Key Metrics */}
+      {/* Key Performance Indicators */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {metrics.map((metric, index) => (
-          <Card key={index} className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="p-3 rounded-full bg-blue-100">
-                {metric.label.includes('Tasks') && <Target className="h-6 w-6 text-blue-600" />}
-                {metric.label.includes('Time') && <Clock className="h-6 w-6 text-blue-600" />}
-                {metric.label.includes('Quality') && <Award className="h-6 w-6 text-blue-600" />}
-                {metric.label.includes('On-Time') && <TrendingUp className="h-6 w-6 text-blue-600" />}
-              </div>
-              {metric.trend === 'up' && (
-                <Badge className="bg-green-100 text-green-700">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  +{metric.change}%
-                </Badge>
-              )}
-              {metric.trend === 'down' && (
-                <Badge className="bg-red-100 text-red-700">
-                  <TrendingDown className="h-3 w-3 mr-1" />
-                  {metric.change}%
-                </Badge>
-              )}
-            </div>
-            <p className="text-sm text-gray-600 mb-1">{metric.label}</p>
-            <p className="text-3xl font-bold">
-              {metric.value}
-              <span className="text-lg text-gray-500 ml-1">{metric.unit}</span>
-            </p>
-          </Card>
-        ))}
-      </div>
+        {taskStats && (
+          <>
+            <Card>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardDescription>Task Completion</CardDescription>
+                  <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{taskStats.completionRate}%</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {taskStats.completedTasks} of {taskStats.totalTasks} tasks
+                </p>
+              </CardContent>
+            </Card>
 
-      {/* Performance Chart */}
-      <Card className="p-6">
-        <h3 className="font-semibold text-lg mb-4">Performance Trend</h3>
-        <div className="h-64 flex items-end justify-between gap-2">
-          {[65, 72, 68, 80, 85, 82, 92, 88, 95, 90, 92, 94].map((value, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-2">
-              <div className="w-full bg-blue-500 rounded-t hover:bg-blue-600 transition-colors" style={{ height: `${value}%` }} />
-              <span className="text-xs text-gray-500">{['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i]}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardDescription>On-Time Delivery</CardDescription>
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{taskStats.onTimeRate}%</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {taskStats.onTimeTasks} tasks delivered on time
+                </p>
+              </CardContent>
+            </Card>
+          </>
+        )}
 
-      {/* Achievements */}
-      <Card className="p-6">
-        <h3 className="font-semibold text-lg mb-4">Recent Achievements</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {achievements.map((achievement) => (
-            <div
-              key={achievement.id}
-              className="p-4 border rounded-lg hover:shadow-md transition-shadow"
-            >
-              <div className="text-4xl mb-3">{achievement.badge}</div>
-              <h4 className="font-semibold mb-2">{achievement.title}</h4>
-              <p className="text-sm text-gray-600 mb-2">{achievement.description}</p>
-              <p className="text-xs text-gray-500">{achievement.date}</p>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* Detailed Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="font-semibold text-lg mb-4">Task Breakdown</h3>
-          <div className="space-y-4">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Completed</span>
-                <span className="font-semibold">45 tasks</span>
+        {timeAccuracy && (
+          <Card>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardDescription>Estimation Accuracy</CardDescription>
+                <Target className="h-4 w-4 text-muted-foreground" />
               </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full">
-                <div className="h-2 bg-green-500 rounded-full" style={{ width: '75%' }} />
+            </CardHeader>
+            <CardContent>
+              <div className={`text-3xl font-bold ${getScoreColor(timeAccuracy.accuracy)}`}>
+                {Math.round(timeAccuracy.accuracy)}%
               </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">In Progress</span>
-                <span className="font-semibold">8 tasks</span>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full">
-                <div className="h-2 bg-blue-500 rounded-full" style={{ width: '15%' }} />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Pending</span>
-                <span className="font-semibold">6 tasks</span>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full">
-                <div className="h-2 bg-gray-400 rounded-full" style={{ width: '10%' }} />
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h3 className="font-semibold text-lg mb-4">Time Estimation Accuracy</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Estimated Total</span>
-              <span className="font-semibold">240h</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Actual Total</span>
-              <span className="font-semibold">228h</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Accuracy Rate</span>
-              <Badge className="bg-green-100 text-green-700">95%</Badge>
-            </div>
-            <div className="pt-4 border-t">
-              <p className="text-sm text-gray-600">
-                You're consistently delivering within estimated timeframes. Great job! 🎯
+              <p className="text-xs text-muted-foreground mt-1">
+                {timeAccuracy.variance > 0 ? '+' : ''}{Math.round(timeAccuracy.variance)}% variance
               </p>
-            </div>
-          </div>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
-      {/* Feedback Section */}
-      <Card className="p-6">
-        <h3 className="font-semibold text-lg mb-4">Recent Feedback</h3>
-        <div className="space-y-3">
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-full bg-blue-100">
-                <Award className="h-5 w-5 text-blue-600" />
+      {/* Time Estimation Details */}
+      {timeAccuracy && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Time Estimation Analysis</CardTitle>
+            <CardDescription>How accurately you estimate task durations</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Total Estimated Hours</p>
+                <p className="text-2xl font-bold">{timeAccuracy.totalEstimated.toFixed(1)}h</p>
               </div>
-              <div>
-                <p className="font-medium mb-1">Great work on Project Alpha!</p>
-                <p className="text-sm text-gray-600">
-                  Your attention to detail and proactive communication helped us deliver ahead of schedule.
-                </p>
-                <p className="text-xs text-gray-500 mt-2">From: Sarah (Manager) - Dec 5, 2025</p>
-              </div>
-            </div>
-          </div>
-          <div className="p-4 bg-green-50 rounded-lg">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-full bg-green-100">
-                <Award className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="font-medium mb-1">Excellent code quality</p>
-                <p className="text-sm text-gray-600">
-                  The refactoring you did on the authentication module significantly improved our codebase.
-                </p>
-                <p className="text-xs text-gray-500 mt-2">From: John (Tech Lead) - Nov 28, 2025</p>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Total Actual Hours</p>
+                <p className="text-2xl font-bold">{timeAccuracy.totalActual.toFixed(1)}h</p>
               </div>
             </div>
-          </div>
-        </div>
-      </Card>
+            <div className="mt-4">
+              <div className="flex items-center gap-2 mb-2">
+                {timeAccuracy.variance > 0 ? (
+                  <TrendingUp className="h-5 w-5 text-red-500" />
+                ) : (
+                  <TrendingDown className="h-5 w-5 text-green-500" />
+                )}
+                <span className="text-sm">
+                  {timeAccuracy.variance > 0 ? 'Over-estimated by' : 'Under-estimated by'}{' '}
+                  {Math.abs(Math.round(timeAccuracy.variance))}%
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Recent Performance Metrics */}
+      {metrics.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Metrics</CardTitle>
+            <CardDescription>Detailed performance metrics by project</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {metrics.map((metric) => (
+                <div key={metric.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">{(metric.metricType || metric.metric).replace('_', ' ')}</p>
+                      {metric.project && (
+                        <Badge variant="outline">{metric.project.name}</Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {new Date(metric.recordedAt).toLocaleDateString()} · {metric.period}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <Badge className={getScoreBadge(metric.value)}>
+                      {metric.value}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {metrics.length === 0 && taskStats?.totalTasks === 0 && (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <TrendingUp className="h-12 w-12 text-gray-400 mb-4" />
+            <p className="text-gray-500 text-center">
+              No performance data available yet. Complete tasks to see your metrics!
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

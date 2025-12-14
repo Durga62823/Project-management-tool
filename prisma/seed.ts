@@ -238,14 +238,15 @@ async function seed() {
       },
     });
 
-    // Add the user's email as LEAD
+    // Add the user's email as EMPLOYEE (for testing employee features)
     const userEmail = await prisma.user.upsert({
       where: { email: "psivadurgaprasad88@gmail.com" },
       update: {
-        role: "LEAD",
+        role: "EMPLOYEE",
         departmentId: engineering.id,
         teamId: frontendTeam.id,
-        position: "Senior Tech Lead",
+        managerId: manager1.id,
+        position: "Full Stack Developer",
         status: "ACTIVE",
       },
       create: {
@@ -253,10 +254,11 @@ async function seed() {
         name: "Siva Durga Prasad",
         firstName: "Siva",
         lastName: "Prasad",
-        role: "LEAD",
+        role: "EMPLOYEE",
         departmentId: engineering.id,
         teamId: frontendTeam.id,
-        position: "Senior Tech Lead",
+        managerId: manager1.id,
+        position: "Full Stack Developer",
         status: "ACTIVE",
       },
     });
@@ -519,10 +521,101 @@ async function seed() {
           estimatedHours: 40,
           tags: JSON.stringify(["auth", "security", "mobile"]),
         },
+        // Tasks for your account
+        {
+          title: "Implement Timesheet Module",
+          description: "Build complete timesheet management with entry tracking and approval workflow",
+          status: "DONE",
+          priority: "HIGH",
+          projectId: project1.id,
+          assigneeId: userEmail.id,
+          reporterId: manager1.id,
+          sprintId: sprint2.id,
+          storyPoints: 13,
+          estimatedHours: 40,
+          actualHours: 38,
+          tags: JSON.stringify(["timesheet", "employee", "backend"]),
+          completedAt: new Date("2024-12-08"),
+          startedAt: new Date("2024-11-28"),
+        },
+        {
+          title: "Build Task Management Dashboard",
+          description: "Create employee task dashboard with filters, search, and status updates",
+          status: "DONE",
+          priority: "HIGH",
+          projectId: project1.id,
+          assigneeId: userEmail.id,
+          reporterId: manager1.id,
+          sprintId: sprint2.id,
+          storyPoints: 8,
+          estimatedHours: 24,
+          actualHours: 26,
+          tags: JSON.stringify(["tasks", "dashboard", "ui"]),
+          completedAt: new Date("2024-12-05"),
+          startedAt: new Date("2024-11-25"),
+        },
+        {
+          title: "Performance Metrics Integration",
+          description: "Integrate performance tracking with real-time metrics display",
+          status: "IN_PROGRESS",
+          priority: "MEDIUM",
+          projectId: project1.id,
+          assigneeId: userEmail.id,
+          reporterId: manager1.id,
+          sprintId: sprint2.id,
+          storyPoints: 8,
+          estimatedHours: 28,
+          tags: JSON.stringify(["performance", "metrics", "analytics"]),
+          startedAt: new Date("2024-12-09"),
+          dueDate: new Date("2024-12-16"),
+        },
+        {
+          title: "Goals Tracking Feature",
+          description: "Add goal creation, progress tracking, and completion workflow",
+          status: "IN_REVIEW",
+          priority: "MEDIUM",
+          projectId: project2.id,
+          assigneeId: userEmail.id,
+          reporterId: manager1.id,
+          sprintId: sprint4.id,
+          storyPoints: 5,
+          estimatedHours: 20,
+          tags: JSON.stringify(["goals", "tracking", "ui"]),
+          prUrl: "https://github.com/example/pr/126",
+          startedAt: new Date("2024-12-06"),
+        },
+        {
+          title: "Calendar View Implementation",
+          description: "Build monthly calendar with event filtering and date selection",
+          status: "TODO",
+          priority: "LOW",
+          projectId: project1.id,
+          assigneeId: userEmail.id,
+          reporterId: manager1.id,
+          sprintId: sprint2.id,
+          storyPoints: 5,
+          estimatedHours: 16,
+          tags: JSON.stringify(["calendar", "ui", "events"]),
+          dueDate: new Date("2024-12-18"),
+        },
+        {
+          title: "Fix Login Authentication Bug",
+          description: "Resolve session timeout issue causing premature logouts",
+          status: "BLOCKED",
+          priority: "URGENT",
+          projectId: project2.id,
+          assigneeId: userEmail.id,
+          reporterId: lead1.id,
+          sprintId: sprint4.id,
+          storyPoints: 3,
+          estimatedHours: 8,
+          blockedReason: "Waiting for security team approval",
+          tags: JSON.stringify(["bug", "auth", "security"]),
+        },
       ],
     });
 
-    console.log("✅ Created 10 tasks\n");
+    console.log("✅ Created 16 tasks\n");
 
     // Create Code Reviews
     console.log("🔍 Creating code reviews...");
@@ -704,7 +797,8 @@ async function seed() {
     // Create Timesheets
     console.log("⏰ Creating timesheets...");
     const lastWeek = new Date("2024-11-25");
-    const thisWeek = new Date("2024-12-02");
+    const previousWeek = new Date("2024-12-02");
+    const currentWeek = new Date("2024-12-09"); // This week (for current testing)
     
     const timesheet1 = await prisma.timesheet.create({
       data: {
@@ -730,7 +824,7 @@ async function seed() {
     const timesheet2 = await prisma.timesheet.create({
       data: {
         userId: emp2.id,
-        weekStart: thisWeek,
+        weekStart: previousWeek,
         weekEnd: new Date("2024-12-08"),
         totalHours: 35,
         status: "SUBMITTED",
@@ -750,7 +844,7 @@ async function seed() {
     const timesheet3 = await prisma.timesheet.create({
       data: {
         userId: emp4.id,
-        weekStart: thisWeek,
+        weekStart: previousWeek,
         weekEnd: new Date("2024-12-08"),
         totalHours: 42,
         status: "SUBMITTED",
@@ -766,7 +860,85 @@ async function seed() {
       },
     });
 
-    console.log("✅ Created 3 timesheets with entries\n");
+    // Current week timesheet (DRAFT status for testing)
+    const timesheet4 = await prisma.timesheet.create({
+      data: {
+        userId: emp1.id,
+        weekStart: currentWeek,
+        weekEnd: new Date("2024-12-15"),
+        totalHours: 0,
+        status: "DRAFT",
+        entries: {
+          create: [
+            { date: new Date("2024-12-09"), projectId: project1.id, hours: 8, description: "Working on dashboard analytics integration", billable: true },
+            { date: new Date("2024-12-10"), projectId: project1.id, hours: 7.5, description: "Code review and testing", billable: true },
+            { date: new Date("2024-12-11"), projectId: project3.id, hours: 6, description: "Mobile app API integration", billable: true },
+            { date: new Date("2024-12-12"), projectId: project1.id, hours: 8, description: "Bug fixes and optimization", billable: true },
+          ],
+        },
+      },
+    });
+
+    // Timesheets for your account
+    const userTimesheet1 = await prisma.timesheet.create({
+      data: {
+        userId: userEmail.id,
+        weekStart: lastWeek,
+        weekEnd: new Date("2024-12-01"),
+        totalHours: 42,
+        status: "APPROVED",
+        approverId: manager1.id,
+        approvedAt: new Date("2024-12-02"),
+        entries: {
+          create: [
+            { date: new Date("2024-11-25"), projectId: project1.id, hours: 8, description: "Timesheet module backend development", billable: true },
+            { date: new Date("2024-11-26"), projectId: project1.id, hours: 9, description: "Timesheet UI implementation", billable: true },
+            { date: new Date("2024-11-27"), projectId: project1.id, hours: 8, description: "Testing and bug fixes", billable: true },
+            { date: new Date("2024-11-28"), projectId: project1.id, hours: 8, description: "Task dashboard development", billable: true },
+            { date: new Date("2024-11-29"), projectId: project1.id, hours: 9, description: "Code review and documentation", billable: true },
+          ],
+        },
+      },
+    });
+
+    const userTimesheet2 = await prisma.timesheet.create({
+      data: {
+        userId: userEmail.id,
+        weekStart: previousWeek,
+        weekEnd: new Date("2024-12-08"),
+        totalHours: 38,
+        status: "SUBMITTED",
+        entries: {
+          create: [
+            { date: new Date("2024-12-02"), projectId: project1.id, hours: 8, description: "Performance metrics integration", billable: true },
+            { date: new Date("2024-12-03"), projectId: project2.id, hours: 7, description: "Goals tracking feature", billable: true },
+            { date: new Date("2024-12-04"), projectId: project1.id, hours: 8, description: "Task management improvements", billable: true },
+            { date: new Date("2024-12-05"), projectId: project2.id, hours: 7, description: "Goals UI and backend work", billable: true },
+            { date: new Date("2024-12-06"), projectId: project1.id, hours: 8, description: "Code review and testing", billable: true },
+          ],
+        },
+      },
+    });
+
+    const userTimesheet3 = await prisma.timesheet.create({
+      data: {
+        userId: userEmail.id,
+        weekStart: currentWeek,
+        weekEnd: new Date("2024-12-15"),
+        totalHours: 32,
+        status: "DRAFT",
+        entries: {
+          create: [
+            { date: new Date("2024-12-09"), projectId: project1.id, hours: 8, description: "Performance metrics dashboard", billable: true },
+            { date: new Date("2024-12-10"), projectId: project1.id, hours: 8, description: "Calendar view development", billable: true },
+            { date: new Date("2024-12-11"), projectId: project2.id, hours: 8, description: "Authentication bug investigation", billable: true },
+            { date: new Date("2024-12-12"), projectId: project1.id, hours: 8, description: "Code review and optimization", billable: true },
+          ],
+        },
+      },
+    });
+
+    console.log("✅ Created 7 timesheets with entries\n");
 
     // Create Goals
     console.log("🎯 Creating goals...");
@@ -796,10 +968,159 @@ async function seed() {
           progress: 60,
           status: "active",
         },
+        // Add more goals for the user's account
+        {
+          userId: userEmail.id,
+          title: "Learn React Performance Optimization",
+          description: "Master React performance patterns including memoization, code splitting, and lazy loading",
+          targetDate: new Date("2025-04-30"),
+          progress: 35,
+          status: "active",
+        },
+        {
+          userId: userEmail.id,
+          title: "Complete AWS Certification",
+          description: "Get AWS Solutions Architect Associate certification",
+          targetDate: new Date("2025-05-15"),
+          progress: 60,
+          status: "active",
+        },
+        {
+          userId: userEmail.id,
+          title: "Deliver Major Feature",
+          description: "Successfully deliver the new reporting dashboard feature",
+          targetDate: new Date("2025-02-28"),
+          progress: 80,
+          status: "active",
+        },
+        {
+          userId: userEmail.id,
+          title: "Mentor Junior Developers",
+          description: "Mentor 2 junior developers and help them grow their skills",
+          targetDate: new Date("2025-12-31"),
+          progress: 25,
+          status: "active",
+        },
+        {
+          userId: userEmail.id,
+          title: "Improve Code Quality Score",
+          description: "Achieve 95% code coverage and reduce technical debt",
+          targetDate: new Date("2025-03-31"),
+          progress: 100,
+          status: "completed",
+        },
       ],
     });
 
-    console.log("✅ Created 3 goals\n");
+    console.log("✅ Created 8 goals\n");
+
+    // Create Performance Metrics
+    console.log("📊 Creating performance metrics...");
+    await prisma.performanceMetric.createMany({
+      data: [
+        // Current month metrics
+        {
+          userId: userEmail.id,
+          projectId: project1.id,
+          metric: "code_quality",
+          value: 92,
+          period: "2024-12",
+          recordedAt: new Date("2024-12-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project1.id,
+          metric: "task_completion",
+          value: 88,
+          period: "2024-12",
+          recordedAt: new Date("2024-12-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project1.id,
+          metric: "on_time_delivery",
+          value: 85,
+          period: "2024-12",
+          recordedAt: new Date("2024-12-01"),
+        },
+        // Previous month metrics
+        {
+          userId: userEmail.id,
+          projectId: project2.id,
+          metric: "code_quality",
+          value: 95,
+          period: "2024-11",
+          recordedAt: new Date("2024-11-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project2.id,
+          metric: "task_completion",
+          value: 90,
+          period: "2024-11",
+          recordedAt: new Date("2024-11-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project2.id,
+          metric: "on_time_delivery",
+          value: 92,
+          period: "2024-11",
+          recordedAt: new Date("2024-11-01"),
+        },
+        // Older month metrics for trend analysis
+        {
+          userId: userEmail.id,
+          projectId: project1.id,
+          metric: "code_quality",
+          value: 87,
+          period: "2024-10",
+          recordedAt: new Date("2024-10-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project1.id,
+          metric: "task_completion",
+          value: 85,
+          period: "2024-10",
+          recordedAt: new Date("2024-10-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project1.id,
+          metric: "on_time_delivery",
+          value: 80,
+          period: "2024-10",
+          recordedAt: new Date("2024-10-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project2.id,
+          metric: "code_quality",
+          value: 90,
+          period: "2024-09",
+          recordedAt: new Date("2024-09-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project2.id,
+          metric: "task_completion",
+          value: 82,
+          period: "2024-09",
+          recordedAt: new Date("2024-09-01"),
+        },
+        {
+          userId: userEmail.id,
+          projectId: project2.id,
+          metric: "on_time_delivery",
+          value: 78,
+          period: "2024-09",
+          recordedAt: new Date("2024-09-01"),
+        },
+      ],
+    });
+
+    console.log("✅ Created 12 performance metrics\n");
 
     // Create 1:1 Meetings
     console.log("🤝 Creating 1:1 meetings...");
@@ -837,7 +1158,36 @@ async function seed() {
     console.log("✅ Created 3 1:1 meetings\n");
 
     // Create Appraisal Cycle
-    console.log("📋 Creating appraisal cycle...");
+    console.log("📋 Creating appraisal cycles...");
+    
+    // Previous completed cycle
+    const previousCycle = await prisma.appraisalCycle.create({
+      data: {
+        name: "Q3 2024 Performance Review",
+        description: "Quarterly performance review for Q3 2024",
+        startDate: new Date("2024-09-01"),
+        endDate: new Date("2024-09-30"),
+        status: "COMPLETED",
+      },
+    });
+
+    await prisma.appraisalReview.createMany({
+      data: [
+        {
+          cycleId: previousCycle.id,
+          userId: userEmail.id,
+          selfReview: "Successfully onboarded to the team and completed initial training. Made good progress on understanding the codebase and contributed to bug fixes.",
+          managerReview: "Good start to the team. Shows potential and willingness to learn. Recommend focusing on coding standards in Q4.",
+          rating: 3.5,
+          finalRating: 3.5,
+          status: "COMPLETED",
+          submittedAt: new Date("2024-09-15"),
+          completedAt: new Date("2024-09-20"),
+        },
+      ],
+    });
+
+    // Current active cycle
     const appraisalCycle = await prisma.appraisalCycle.create({
       data: {
         name: "Q4 2024 Performance Review",
@@ -873,10 +1223,18 @@ async function seed() {
           userId: emp3.id,
           status: "DRAFT",
         },
+        {
+          cycleId: appraisalCycle.id,
+          userId: userEmail.id,
+          selfReview: "Great quarter with significant contributions to project management features. Successfully delivered timesheet and task management modules. Actively pursuing AWS certification and showing improvement in code quality.",
+          rating: 4.0,
+          status: "IN_PROGRESS",
+          submittedAt: new Date("2024-12-07"),
+        },
       ],
     });
 
-    console.log("✅ Created appraisal cycle with 3 reviews\n");
+    console.log("✅ Created 2 appraisal cycles with 5 reviews\n");
 
     // Create Audit Logs
     console.log("📝 Creating audit logs...");
@@ -917,7 +1275,7 @@ async function seed() {
     console.log("│ Manager  │ manager2@company.com   │ password123             │");
     console.log("│ Lead     │ lead1@company.com      │ password123             │");
     console.log("│ Lead     │ lead2@company.com      │ password123             │");
-    console.log("│ Lead     │ psivadurgaprasad88@... │ (your account)          │");
+    console.log("│ Employee │ psivadurgaprasad88@... │ (your account)          │");
     console.log("│ Employee │ dev1@company.com       │ password123             │");
     console.log("│ Employee │ dev2@company.com       │ password123             │");
     console.log("│ Employee │ dev3@company.com       │ password123             │");
@@ -930,14 +1288,15 @@ async function seed() {
     console.log("  - 12 Users");
     console.log("  - 3 Projects");
     console.log("  - 4 Sprints");
-    console.log("  - 10 Tasks");
+    console.log("  - 16 Tasks (6 assigned to your account)");
     console.log("  - 3 Code Reviews");
     console.log("  - 7 Technical Metrics");
     console.log("  - 5 PTO Requests");
-    console.log("  - 3 Timesheets");
-    console.log("  - 3 Goals");
+    console.log("  - 7 Timesheets (3 for your account: 1 DRAFT, 1 SUBMITTED, 1 APPROVED)");
+    console.log("  - 8 Goals (5 for your account including 1 completed)");
+    console.log("  - 12 Performance Metrics (12 for your account across 4 months)");
     console.log("  - 3 1:1 Meetings");
-    console.log("  - 1 Appraisal Cycle with 3 Reviews");
+    console.log("  - 2 Appraisal Cycles with 5 Reviews (2 for your account)");
     console.log("  - 3 Audit Logs\n");
 
   } catch (error) {
