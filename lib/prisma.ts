@@ -9,7 +9,7 @@ export const prisma = isEdgeRuntime
   ? ({} as PrismaClient) // Return empty object in edge runtime
   : (globalForPrisma.prisma ??
     new PrismaClient({
-      log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+      log: ["error"],
     }));
 
 if (process.env.NODE_ENV !== "production" && !isEdgeRuntime) {
