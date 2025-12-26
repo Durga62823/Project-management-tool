@@ -65,16 +65,16 @@ export default function LeadAIFeaturesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 p-6 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-background p-6 max-w-7xl mx-auto">
       <div className="mb-8">
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full shadow-lg w-fit mb-3">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-primary-foreground rounded-full shadow-lg w-fit mb-3">
           <Sparkles className="h-4 w-4" />
           <span className="text-sm font-semibold">AI Powered</span>
         </div>
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
           Lead AI Features
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-primary mt-2">
           AI-powered tools to enhance team leadership and sprint management
         </p>
       </div>
@@ -86,7 +86,7 @@ export default function LeadAIFeaturesPage() {
             return (
               <Card
                 key={feature.id}
-                className="p-6 cursor-pointer border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-2 hover:border-purple-300"
+                className="p-6 cursor-pointer border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-2 hover:border-purple-300"
                 onClick={() => setActiveFeature(feature.id)}
               >
                 <div className="flex flex-col">
@@ -96,7 +96,7 @@ export default function LeadAIFeaturesPage() {
                   <h3 className="font-semibold text-lg mb-2 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-4 flex-grow">{feature.description}</p>
+                  <p className="text-sm text-primary mb-4 flex-grow">{feature.description}</p>
                   <Button 
                     className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:shadow-lg hover:scale-105 transition-all duration-300" 
                     variant="default"
@@ -118,7 +118,7 @@ export default function LeadAIFeaturesPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Features
           </Button>
-          <Card className="p-6 border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="p-6 border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300">
             {renderFeature()}
           </Card>
         </div>

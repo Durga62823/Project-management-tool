@@ -25,18 +25,18 @@ export default async function ManagerAppraisalsPage() {
   const completed = teamAppraisals.filter(a => a.status === "COMPLETED");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-emerald-50 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-7xl space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
-            <Sparkles className="h-6 w-6 text-white" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-lg">
+            <Sparkles className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold text-primary">
               Manager - Appraisals
             </h1>
-            <p className="mt-1 text-slate-600">
+            <p className="mt-1 text-muted-foreground">
               Conduct performance reviews and manage team appraisals
             </p>
           </div>
@@ -44,21 +44,21 @@ export default async function ManagerAppraisalsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
-            <div className="text-sm font-medium text-slate-500">Draft</div>
-            <div className="mt-2 text-3xl font-bold text-slate-900">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
+            <div className="text-sm font-medium text-muted-foreground">Draft</div>
+            <div className="mt-2 text-3xl font-bold text-foreground">
               {draft.length}
             </div>
           </div>
-          <div className="rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 to-cyan-50 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
-            <div className="text-sm font-medium text-blue-700">In Progress</div>
-            <div className="mt-2 text-3xl font-bold text-blue-600">
+          <div className="rounded-2xl border border-primary/20 bg-primary/10 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
+            <div className="text-sm font-medium text-primary">In Progress</div>
+            <div className="mt-2 text-3xl font-bold text-primary">
               {inProgress.length}
             </div>
           </div>
-          <div className="rounded-2xl border border-green-200/60 bg-gradient-to-br from-green-50 to-emerald-50 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
-            <div className="text-sm font-medium text-green-700">Completed</div>
-            <div className="mt-2 text-3xl font-bold text-green-600">
+          <div className="rounded-2xl border border-primary/20 bg-primary/10 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
+            <div className="text-sm font-medium text-primary">Completed</div>
+            <div className="mt-2 text-3xl font-bold text-primary">
               {completed.length}
             </div>
           </div>
@@ -66,21 +66,21 @@ export default async function ManagerAppraisalsPage() {
 
         {/* Active Cycle */}
         {activeCycle && (
-          <div className="rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 to-cyan-50 backdrop-blur-sm shadow-lg p-6">
+          <div className="rounded-2xl border border-primary/20 bg-primary/10 backdrop-blur-sm shadow-lg p-6">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-blue-900">
+                <h3 className="text-lg font-semibold text-foreground">
                   {activeCycle.name}
                 </h3>
-                <p className="mt-1 text-sm text-blue-700">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {activeCycle.description}
                 </p>
-                <div className="mt-2 text-sm text-blue-600">
+                <div className="mt-2 text-sm text-muted-foreground">
                   {new Date(activeCycle.startDate).toLocaleDateString()} -{" "}
                   {new Date(activeCycle.endDate).toLocaleDateString()}
                 </div>
               </div>
-              <span className="rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 px-3 py-1 text-sm font-semibold text-blue-700 shadow-sm">
+              <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary shadow-sm">
                 Active Cycle
               </span>
             </div>
@@ -89,26 +89,26 @@ export default async function ManagerAppraisalsPage() {
 
         {/* In Progress Reviews */}
         {inProgress.length > 0 && (
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg overflow-hidden">
-            <div className="border-b border-slate-200/60 bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-4">
-              <h3 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg overflow-hidden">
+            <div className="border-b border-border bg-primary/10 px-6 py-4">
+              <h3 className="text-lg font-semibold text-foreground">
                 In Progress ({inProgress.length})
               </h3>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {inProgress.map((review) => (
-                <div key={review.id} className="px-6 py-4 transition-all hover:bg-blue-50/50">
+                <div key={review.id} className="px-6 py-4 transition-all hover:bg-muted/50">
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="font-medium text-slate-900">
+                      <div className="font-medium text-foreground">
                         {review.user.firstName} {review.user.lastName}
                       </div>
-                      <div className="mt-1 text-sm text-slate-500">
+                      <div className="mt-1 text-sm text-muted-foreground">
                         {review.user.position} • {review.cycle.name}
                       </div>
                       {review.selfReview && (
                         <div className="mt-2 flex items-center gap-2 text-sm">
-                          <span className="rounded-full bg-gradient-to-r from-green-100 to-emerald-100 px-2 py-1 text-xs font-semibold text-green-700 shadow-sm">
+                          <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary shadow-sm">
                             Self-review submitted
                           </span>
                         </div>
@@ -116,8 +116,8 @@ export default async function ManagerAppraisalsPage() {
                     </div>
                     <Link
                       href={`/manager/appraisals/${review.id}`}
-                      className="rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-2 text-sm font-medium text-white hover:from-green-700 hover:to-emerald-700 shadow-md hover:shadow-lg transition-all"
-                    >
+                      className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg transition-all">
+                    
                       Conduct Review
                     </Link>
                   </div>
@@ -129,28 +129,28 @@ export default async function ManagerAppraisalsPage() {
 
         {/* Draft Reviews */}
         {draft.length > 0 && (
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg overflow-hidden">
-            <div className="border-b border-slate-200/60 bg-gradient-to-r from-slate-50 to-gray-50 px-6 py-4">
-              <h3 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg overflow-hidden">
+            <div className="border-b border-border bg-card px-6 py-4">
+              <h3 className="text-lg font-semibold text-foreground">
                 Draft ({draft.length})
               </h3>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {draft.map((review) => (
-                <div key={review.id} className="px-6 py-4 transition-all hover:bg-slate-50/50">
+                <div key={review.id} className="px-6 py-4 transition-all hover:bg-muted/50">
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="font-medium text-slate-900">
+                      <div className="font-medium text-foreground">
                         {review.user.firstName} {review.user.lastName}
                       </div>
-                      <div className="mt-1 text-sm text-slate-500">
+                      <div className="mt-1 text-sm text-muted-foreground">
                         {review.user.position} • {review.cycle.name}
                       </div>
                     </div>
                     <Link
                       href={`/manager/appraisals/${review.id}`}
-                      className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300 transition-all"
-                    >
+                      className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-all">
+                    
                       Start Review
                     </Link>
                   </div>
@@ -162,27 +162,27 @@ export default async function ManagerAppraisalsPage() {
 
         {/* Completed Reviews */}
         {completed.length > 0 && (
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg overflow-hidden">
-            <div className="border-b border-slate-200/60 bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4">
-              <h3 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg overflow-hidden">
+            <div className="border-b border-border bg-primary/10 px-6 py-4">
+              <h3 className="text-lg font-semibold text-foreground">
                 Completed ({completed.length})
               </h3>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {completed.slice(0, 10).map((review) => (
-                <div key={review.id} className="px-6 py-4 transition-all hover:bg-green-50/50">
+                <div key={review.id} className="px-6 py-4 transition-all hover:bg-muted/50">
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="font-medium text-slate-900">
+                      <div className="font-medium text-foreground">
                         {review.user.firstName} {review.user.lastName}
                       </div>
-                      <div className="mt-1 text-sm text-slate-500">
+                      <div className="mt-1 text-sm text-muted-foreground">
                         {review.user.position} • {review.cycle.name}
                       </div>
                       {review.finalRating && (
                         <div className="mt-2 text-sm">
-                          <span className="text-slate-500">Final Rating:</span>{" "}
-                          <span className="font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                          <span className="text-muted-foreground">Final Rating:</span>{" "}
+                          <span className="font-semibold text-primary">
                             {review.finalRating.toFixed(1)}/5.0
                           </span>
                         </div>
@@ -191,8 +191,8 @@ export default async function ManagerAppraisalsPage() {
                     <div className="flex gap-2">
                       <Link
                         href={`/manager/appraisals/${review.id}`}
-                        className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300 transition-all"
-                      >
+                        className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-all">
+                      
                         View
                       </Link>
                     </div>
@@ -204,7 +204,7 @@ export default async function ManagerAppraisalsPage() {
         )}
 
         {teamAppraisals.length === 0 && (
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg px-6 py-12 text-center text-slate-500">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg px-6 py-12 text-center text-muted-foreground">
             No appraisals available
           </div>
         )}

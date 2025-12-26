@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { UserMenu, LogoutButton } from "@/components/common";
+import { UserMenu, LogoutButton, ModeToggle, ColorPicker } from "@/components/common";
 
 export default async function ManagerLayout({
   children,
@@ -48,6 +48,17 @@ export default async function ManagerLayout({
                   className="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                 >
                   PTO Requests
+                </Link>
+              </nav>
+            </div>
+            <div className="flex items-center gap-3">
+              <ModeToggle />
+              <ColorPicker />
+              <UserMenu />
+            </div>
+          </div>
+        </div>
+      </header>
                 </Link>
                 <Link
                   href="/manager/appraisals"

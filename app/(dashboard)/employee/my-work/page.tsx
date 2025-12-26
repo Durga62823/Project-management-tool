@@ -214,9 +214,9 @@ export default function MyWorkPage() {
   const getPriorityBadge = (priority: string) => {
     const priorityConfig: Record<string, { label: string; className: string }> =
       {
-        LOW: { label: "Low", className: "bg-gray-100 text-gray-700" },
-        MEDIUM: { label: "Medium", className: "bg-orange-100 text-orange-700" },
-        HIGH: { label: "High", className: "bg-red-100 text-red-700" },
+        LOW: { label: "Low", className: "bg-primary/10 text-primary" },
+        MEDIUM: { label: "Medium", className: "bg-primary/10 text-primary" },
+        HIGH: { label: "High", className: "bg-primary/10 text-primary" },
         URGENT: { label: "Urgent", className: "bg-red-200 text-red-900" },
       };
     return priorityConfig[priority] || priorityConfig["MEDIUM"];
@@ -245,20 +245,20 @@ export default function MyWorkPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-background">
       <div className="p-6 max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
-                <Sparkles className="h-6 w-6 text-white" />
+              <div className="p-2 rounded-xl bg-primary shadow-lg">
+                <Sparkles className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                   My Tasks
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-primary">
                   Manage your assigned tasks and track progress
                 </p>
               </div>
@@ -300,13 +300,13 @@ export default function MyWorkPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-4">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
-                <CheckCircle className="h-5 w-5 text-white" />
+              <div className="p-3 rounded-xl bg-primary shadow-lg">
+                <CheckCircle className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">In Progress</p>
+                <p className="text-sm text-primary font-medium">In Progress</p>
                 <p className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   {stats?.inProgress || 0}
                 </p>
@@ -314,13 +314,13 @@ export default function MyWorkPage() {
             </div>
           </Card>
 
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-4">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg">
-                <Clock className="h-5 w-5 text-white" />
+              <div className="p-3 rounded-xl bg-primary shadow-lg">
+                <Clock className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Total Tasks</p>
+                <p className="text-sm text-primary font-medium">Total Tasks</p>
                 <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   {stats?.total || 0}
                 </p>
@@ -328,13 +328,13 @@ export default function MyWorkPage() {
             </div>
           </Card>
 
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-4">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
-                <AlertCircle className="h-5 w-5 text-white" />
+              <div className="p-3 rounded-xl bg-primary shadow-lg">
+                <AlertCircle className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Overdue</p>
+                <p className="text-sm text-primary font-medium">Overdue</p>
                 <p className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                   {stats?.overdue || 0}
                 </p>
@@ -342,13 +342,13 @@ export default function MyWorkPage() {
             </div>
           </Card>
 
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-4">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-600 shadow-lg">
-                <CheckCircle className="h-5 w-5 text-white" />
+              <div className="p-3 rounded-xl bg-primary shadow-lg">
+                <CheckCircle className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Completed</p>
+                <p className="text-sm text-primary font-medium">Completed</p>
                 <p className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                   {stats?.completed || 0}
                 </p>
@@ -358,10 +358,10 @@ export default function MyWorkPage() {
         </div>
 
         {/* Tasks List */}
-        <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg p-6">
+        <Card className="border-border bg-card backdrop-blur-sm shadow-lg p-6">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : filteredTasks.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
@@ -375,7 +375,7 @@ export default function MyWorkPage() {
               {filteredTasks.map((task) => (
                 <div
                   key={task.id}
-                  className="p-4 border border-slate-200/60 rounded-xl bg-white/50 backdrop-blur-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                  className="p-4 border border-border rounded-xl bg-white/50 backdrop-blur-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
                 >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
@@ -387,7 +387,7 @@ export default function MyWorkPage() {
                         </Badge>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">
+                    <p className="text-sm text-primary mb-2">
                       {task.project?.name || "No project"}
                     </p>
                     {task.description && (
@@ -395,7 +395,7 @@ export default function MyWorkPage() {
                         {task.description}
                       </p>
                     )}
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-4 text-sm text-primary">
                       <span>Due: {formatDate(task.dueDate)}</span>
                       <span>
                         Time: {task.actualHours || 0}h /{" "}
@@ -453,7 +453,7 @@ export default function MyWorkPage() {
         {/* Log Time Dialog */}
         {logTimeDialog.open && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <Card className="w-full max-w-md p-6 border-slate-200/60 bg-white shadow-2xl animate-in fade-in duration-200">
+            <Card className="w-full max-w-md p-6 border-border bg-white shadow-2xl animate-in fade-in duration-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Log Time</h3>
               <Button
@@ -514,7 +514,7 @@ export default function MyWorkPage() {
         {/* Create Task Dialog */}
         {createTaskDialog && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <Card className="w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto border-slate-200/60 bg-white shadow-2xl animate-in fade-in duration-200">
+            <Card className="w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto border-border bg-white shadow-2xl animate-in fade-in duration-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Create New Task</h3>
               <Button

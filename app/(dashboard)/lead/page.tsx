@@ -49,14 +49,14 @@ export default async function LeadOverviewPage() {
 
   if (!user?.team) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 flex items-center justify-center p-6">
-        <Card className="max-w-md w-full border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-xl">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="max-w-md w-full border-border bg-card backdrop-blur-sm shadow-xl">
           <CardContent className="pt-12 pb-12 text-center">
-            <div className="p-4 rounded-full bg-purple-100 inline-flex mb-6">
-              <Users className="h-12 w-12 text-purple-600" />
+            <div className="p-4 rounded-full bg-primary/10 inline-flex mb-6">
+              <Users className="h-12 w-12 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">No Team Assigned</h2>
-            <p className="text-slate-600">Please contact your administrator to assign you to a team.</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">No Team Assigned</h2>
+            <p className="text-muted-foreground">Please contact your administrator to assign you to a team.</p>
           </CardContent>
         </Card>
       </div>
@@ -90,23 +90,23 @@ export default async function LeadOverviewPage() {
   const currentSprint = activeSprints.find((s) => s.status === "ACTIVE");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-700 p-8 md:p-12 shadow-2xl shadow-purple-500/20">
+        <div className="relative overflow-hidden rounded-3xl bg-primary p-8 md:p-12 shadow-2xl">
           <div className="absolute inset-0 bg-grid-white/5" />
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl" />
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary-foreground/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-primary-foreground/10 rounded-full blur-3xl" />
           
           <div className="relative">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-4">
-              <Sparkles className="h-4 w-4 text-yellow-300" />
-              <span className="text-sm font-medium text-white">Tech Lead Dashboard</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-4">
+              <Sparkles className="h-4 w-4 text-primary-foreground" />
+              <span className="text-sm font-medium text-primary-foreground">Tech Lead Dashboard</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-bold text-primary-foreground mb-4 leading-tight">
               {user.team.name}
             </h1>
-            <p className="text-lg text-purple-100">
+            <p className="text-lg text-primary-foreground/80">
               {user.team._count.users} team members • {allTasks.length} total tasks
             </p>
           </div>
@@ -114,81 +114,81 @@ export default async function LeadOverviewPage() {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card className="relative overflow-hidden border-slate-200/60 bg-white/70 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-slate-500/10 to-slate-600/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
+          <Card className="relative overflow-hidden border-border bg-card backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
             <CardContent className="relative pt-6">
               <div className="flex items-center justify-between mb-3">
-                <div className="p-2 rounded-lg bg-slate-100">
-                  <ListChecks className="h-5 w-5 text-slate-600" />
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <ListChecks className="h-5 w-5 text-primary" />
                 </div>
               </div>
-              <p className="text-xs font-semibold text-slate-600 mb-1">To Do</p>
-              <p className="text-3xl font-bold text-slate-900">{tasksByStatus.todo}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">To Do</p>
+              <p className="text-3xl font-bold text-foreground">{tasksByStatus.todo}</p>
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden border-slate-200/60 bg-white/70 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-blue-600/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
+          <Card className="relative overflow-hidden border-border bg-card backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
             <CardContent className="relative pt-6">
               <div className="flex items-center justify-between mb-3">
-                <div className="p-2 rounded-lg bg-blue-100">
-                  <Clock className="h-5 w-5 text-blue-600" />
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Clock className="h-5 w-5 text-primary" />
                 </div>
               </div>
-              <p className="text-xs font-semibold text-slate-600 mb-1">In Progress</p>
-              <p className="text-3xl font-bold text-blue-600">{tasksByStatus.inProgress}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">In Progress</p>
+              <p className="text-3xl font-bold text-primary">{tasksByStatus.inProgress}</p>
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden border-slate-200/60 bg-white/70 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-purple-600/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
+          <Card className="relative overflow-hidden border-border bg-card backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
             <CardContent className="relative pt-6">
               <div className="flex items-center justify-between mb-3">
-                <div className="p-2 rounded-lg bg-purple-100">
-                  <ListChecks className="h-5 w-5 text-purple-600" />
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <ListChecks className="h-5 w-5 text-primary" />
                 </div>
               </div>
-              <p className="text-xs font-semibold text-slate-600 mb-1">In Review</p>
-              <p className="text-3xl font-bold text-purple-600">{tasksByStatus.inReview}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">In Review</p>
+              <p className="text-3xl font-bold text-primary">{tasksByStatus.inReview}</p>
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden border-slate-200/60 bg-white/70 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-green-600/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
+          <Card className="relative overflow-hidden border-border bg-card backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
             <CardContent className="relative pt-6">
               <div className="flex items-center justify-between mb-3">
-                <div className="p-2 rounded-lg bg-green-100">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
                 </div>
               </div>
-              <p className="text-xs font-semibold text-slate-600 mb-1">Done</p>
-              <p className="text-3xl font-bold text-green-600">{tasksByStatus.done}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">Done</p>
+              <p className="text-3xl font-bold text-primary">{tasksByStatus.done}</p>
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden border-slate-200/60 bg-white/70 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-500/10 to-red-600/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
+          <Card className="relative overflow-hidden border-border bg-card backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-destructive/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
             <CardContent className="relative pt-6">
               <div className="flex items-center justify-between mb-3">
-                <div className="p-2 rounded-lg bg-red-100">
-                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                <div className="p-2 rounded-lg bg-destructive/10">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
                 </div>
               </div>
-              <p className="text-xs font-semibold text-slate-600 mb-1">Blocked</p>
-              <p className="text-3xl font-bold text-red-600">{tasksByStatus.blocked}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">Blocked</p>
+              <p className="text-3xl font-bold text-destructive">{tasksByStatus.blocked}</p>
             </CardContent>
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Current Sprint */}
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg">
             <CardHeader>
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
-                  <Target className="h-5 w-5 text-white" />
+                <div className="p-2 rounded-lg bg-primary">
+                  <Target className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl font-bold text-slate-900">Current Sprint</CardTitle>
+                <CardTitle className="text-xl font-bold text-foreground">Current Sprint</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
@@ -196,47 +196,47 @@ export default async function LeadOverviewPage() {
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h4 className="font-bold text-slate-900 text-lg">{currentSprint.name}</h4>
+                      <h4 className="font-bold text-foreground text-lg">{currentSprint.name}</h4>
                       {currentSprint.goal && (
-                        <p className="text-sm text-slate-600 mt-1">{currentSprint.goal}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{currentSprint.goal}</p>
                       )}
                     </div>
                     <Link
                       href="/lead/sprints"
-                      className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
+                      className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
                     >
                       Details
                       <ArrowUpRight className="h-4 w-4" />
                     </Link>
                   </div>
-                  <div className="space-y-3 p-4 rounded-xl bg-slate-50">
+                  <div className="space-y-3 p-4 rounded-xl bg-primary/10">
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span className="text-slate-600 font-medium">Progress</span>
-                        <span className="font-bold text-slate-900">{currentSprint.progress.toFixed(0)}%</span>
+                        <span className="text-muted-foreground font-medium">Progress</span>
+                        <span className="font-bold text-foreground">{currentSprint.progress.toFixed(0)}%</span>
                       </div>
-                      <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                      <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                         <div
-                          className="bg-gradient-to-r from-indigo-600 to-purple-600 h-3 rounded-full transition-all duration-500"
+                          className="bg-primary h-3 rounded-full transition-all duration-500"
                           style={{ width: `${currentSprint.progress}%` }}
                         />
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="p-3 rounded-lg bg-white">
-                        <p className="text-xs text-slate-600 font-medium mb-1">Tasks</p>
-                        <p className="text-2xl font-bold text-slate-900">
-                          {currentSprint.completedTasks}<span className="text-base text-slate-400">/{currentSprint.totalTasks}</span>
+                      <div className="p-3 rounded-lg bg-card">
+                        <p className="text-xs text-muted-foreground font-medium mb-1">Tasks</p>
+                        <p className="text-2xl font-bold text-foreground">
+                          {currentSprint.completedTasks}<span className="text-base text-muted-foreground">/{currentSprint.totalTasks}</span>
                         </p>
                       </div>
-                      <div className="p-3 rounded-lg bg-white">
-                        <p className="text-xs text-slate-600 font-medium mb-1">Points</p>
-                        <p className="text-2xl font-bold text-slate-900">
-                          {currentSprint.completedPoints}<span className="text-base text-slate-400">/{currentSprint.totalPoints}</span>
+                      <div className="p-3 rounded-lg bg-card">
+                        <p className="text-xs text-muted-foreground font-medium mb-1">Points</p>
+                        <p className="text-2xl font-bold text-foreground">
+                          {currentSprint.completedPoints}<span className="text-base text-muted-foreground">/{currentSprint.totalPoints}</span>
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CalendarIcon className="h-4 w-4" />
                       <span>Ends: {new Date(currentSprint.endDate).toLocaleDateString()}</span>
                     </div>
@@ -244,13 +244,13 @@ export default async function LeadOverviewPage() {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <div className="p-4 rounded-full bg-slate-100 inline-flex mb-4">
-                    <Target className="h-8 w-8 text-slate-400" />
+                  <div className="p-4 rounded-full bg-primary/10 inline-flex mb-4">
+                    <Target className="h-8 w-8 text-primary" />
                   </div>
-                  <p className="text-slate-600 mb-6">No active sprint</p>
+                  <p className="text-muted-foreground mb-6">No active sprint</p>
                   <Link
                     href="/lead/sprints"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all"
                   >
                     <Plus className="h-5 w-5" />
                     Plan Sprint

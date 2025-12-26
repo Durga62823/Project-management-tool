@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import Link from "next/link";
 import { LogoutButton } from "@/components/common/LogoutButton";
 import { UserMenu } from "@/components/common/UserMenu";
+import { ModeToggle, ColorPicker } from "@/components/common";
 import {
   Home,
   CheckCircle,
@@ -44,6 +45,8 @@ export default async function EmployeeDashboardLayout({
               </span>
             </div>
             <div className="flex items-center gap-4">
+              <ModeToggle />
+              <ColorPicker />
               <UserMenu />
             </div>
           </div>

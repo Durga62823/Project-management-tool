@@ -76,18 +76,18 @@ export default function ManagerAIFeaturesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-emerald-50 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8 flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
-            <Sparkles className="h-6 w-6 text-white" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-lg">
+            <Sparkles className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
               Manager - AI Features
             </h1>
-            <p className="mt-1 text-slate-600">
+            <p className="mt-1 text-muted-foreground">
               AI-powered tools to enhance team management and decision-making
             </p>
           </div>
@@ -100,7 +100,7 @@ export default function ManagerAIFeaturesPage() {
               return (
                 <div
                   key={feature.id}
-                  className="group rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg p-6 cursor-pointer transition-all hover:shadow-2xl hover:scale-105 hover:border-green-300"
+                  className="group rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg p-6 cursor-pointer transition-all hover:shadow-2xl hover:scale-105 hover:border-green-300"
                   onClick={() => setActiveFeature(feature.id)}
                 >
                   <div className="flex flex-col">
@@ -109,14 +109,14 @@ export default function ManagerAIFeaturesPage() {
                     >
                       <Icon className={`h-8 w-8 bg-gradient-to-br ${feature.gradient} bg-clip-text text-transparent`} style={{WebkitTextFillColor: 'transparent', backgroundClip: 'text'}} />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2 text-slate-900">
+                    <h3 className="font-semibold text-lg mb-2 text-foreground">
                       {feature.title}
                     </h3>
-                    <p className="text-sm text-slate-600 mb-4 flex-1">
+                    <p className="text-sm text-muted-foreground mb-4 flex-1">
                       {feature.description}
                     </p>
                     <Button 
-                      className={`w-full bg-gradient-to-r ${feature.gradient} text-white hover:opacity-90 shadow-md hover:shadow-lg transition-all`}
+                      className={`w-full bg-gradient-to-r ${feature.gradient} text-primary-foreground hover:opacity-90 shadow-md hover:shadow-lg transition-all`}
                     >
                       Open Feature
                     </Button>
@@ -130,11 +130,11 @@ export default function ManagerAIFeaturesPage() {
             <Button
               onClick={() => setActiveFeature(null)}
               variant="outline"
-              className="mb-4 border-slate-200 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300"
+              className="mb-4 border-border hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300"
             >
               ← Back to Features
             </Button>
-            <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg p-6">
+            <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg p-6">
               {renderFeature()}
             </div>
           </div>

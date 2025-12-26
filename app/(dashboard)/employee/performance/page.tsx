@@ -101,15 +101,15 @@ export default function PerformancePage() {
   }
 
   function getScoreColor(score: number) {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    return "text-red-600";
+    if (score >= 80) return "text-primary";
+    if (score >= 60) return "text-primary";
+    return "text-primary";
   }
 
   function getScoreBadge(score: number) {
-    if (score >= 80) return "bg-green-100 text-green-800";
-    if (score >= 60) return "bg-yellow-100 text-yellow-800";
-    return "bg-red-100 text-red-800";
+    if (score >= 80) return "bg-primary/10 text-green-800";
+    if (score >= 60) return "bg-primary/10 text-yellow-800";
+    return "bg-primary/10 text-red-800";
   }
 
   if (loading) {
@@ -121,17 +121,17 @@ export default function PerformancePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
-            <Sparkles className="h-6 w-6 text-white" />
+          <div className="p-2 rounded-xl bg-primary shadow-lg">
+            <Sparkles className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
               My Performance
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-primary mt-1">
               Track your performance metrics and productivity
             </p>
           </div>
@@ -141,12 +141,12 @@ export default function PerformancePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {taskStats && (
             <>
-              <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardDescription className="font-medium">Task Completion</CardDescription>
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-green-500 to-green-600 shadow-md">
-                      <CheckCircle2 className="h-4 w-4 text-white" />
+                    <div className="p-2 rounded-lg bg-primary shadow-md">
+                      <CheckCircle2 className="h-4 w-4 text-primary-foreground" />
                     </div>
                   </div>
                 </CardHeader>
@@ -160,12 +160,12 @@ export default function PerformancePage() {
               </CardContent>
             </Card>
 
-              <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardDescription className="font-medium">On-Time Delivery</CardDescription>
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
-                      <Clock className="h-4 w-4 text-white" />
+                    <div className="p-2 rounded-lg bg-primary shadow-md">
+                      <Clock className="h-4 w-4 text-primary-foreground" />
                     </div>
                   </div>
                 </CardHeader>
@@ -182,12 +182,12 @@ export default function PerformancePage() {
         )}
 
           {timeAccuracy && (
-            <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardDescription className="font-medium">Estimation Accuracy</CardDescription>
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 shadow-md">
-                    <Target className="h-4 w-4 text-white" />
+                  <div className="p-2 rounded-lg bg-primary shadow-md">
+                    <Target className="h-4 w-4 text-primary-foreground" />
                   </div>
                 </div>
               </CardHeader>
@@ -206,7 +206,7 @@ export default function PerformancePage() {
 
         {/* Time Estimation Details */}
         {timeAccuracy && (
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg">
           <CardHeader>
             <CardTitle>Time Estimation Analysis</CardTitle>
             <CardDescription>
@@ -253,7 +253,7 @@ export default function PerformancePage() {
 
         {/* Recent Performance Metrics */}
         {metrics.length > 0 && (
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg">
           <CardHeader>
             <CardTitle>Recent Metrics</CardTitle>
             <CardDescription>
@@ -265,7 +265,7 @@ export default function PerformancePage() {
                 {metrics.map((metric) => (
                   <div
                     key={metric.id}
-                    className="flex items-center justify-between p-3 border border-slate-200/60 rounded-xl bg-white/50 backdrop-blur-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                    className="flex items-center justify-between p-3 border border-border rounded-xl bg-white/50 backdrop-blur-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
                   >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -294,7 +294,7 @@ export default function PerformancePage() {
       )}
 
         {metrics.length === 0 && taskStats?.totalTasks === 0 && (
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <TrendingUp className="h-12 w-12 text-gray-400 mb-4" />
             <p className="text-gray-500 text-center">

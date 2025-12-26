@@ -123,19 +123,19 @@ export function SettingsClient({
   return (
     <div className="w-full max-w-2xl space-y-8">
       {/* Preferences Section */}
-      <div className="p-6 bg-white border border-gray-200 rounded-lg">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h2 className="text-lg font-semibold text-foreground mb-6">
           Preferences
         </h2>
 
         <div className="space-y-6">
           {/* Theme Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-3">
+            <label className="block text-sm font-medium text-foreground mb-3">
               Theme
             </label>
             <div className="space-y-3">
-              <div className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-center p-3 border border-border rounded-lg hover:bg-accent transition-colors">
                 <input
                   type="radio"
                   id="light"
@@ -147,12 +147,12 @@ export function SettingsClient({
                 />
                 <label
                   htmlFor="light"
-                  className="ml-3 text-sm text-gray-700 cursor-pointer flex-1"
+                  className="ml-3 text-sm text-foreground cursor-pointer flex-1"
                 >
                   Light
                 </label>
               </div>
-              <div className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-center p-3 border border-border rounded-lg hover:bg-accent transition-colors">
                 <input
                   type="radio"
                   id="dark"
@@ -164,12 +164,12 @@ export function SettingsClient({
                 />
                 <label
                   htmlFor="dark"
-                  className="ml-3 text-sm text-gray-700 cursor-pointer flex-1"
+                  className="ml-3 text-sm text-foreground cursor-pointer flex-1"
                 >
                   Dark
                 </label>
               </div>
-              <div className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-center p-3 border border-border rounded-lg hover:bg-accent transition-colors">
                 <input
                   type="radio"
                   id="auto"
@@ -181,7 +181,7 @@ export function SettingsClient({
                 />
                 <label
                   htmlFor="auto"
-                  className="ml-3 text-sm text-gray-700 cursor-pointer flex-1"
+                  className="ml-3 text-sm text-foreground cursor-pointer flex-1"
                 >
                   Auto (based on system)
                 </label>
@@ -191,13 +191,13 @@ export function SettingsClient({
 
           {/* Language Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-3">
+            <label className="block text-sm font-medium text-foreground mb-3">
               Language
             </label>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 cursor-pointer hover:border-gray-400 transition-colors"
+              className="w-full px-4 py-2 border border-input rounded-lg text-sm bg-background text-foreground cursor-pointer hover:border-ring transition-colors"
             >
               <option>English</option>
               <option>Spanish</option>
@@ -208,13 +208,13 @@ export function SettingsClient({
 
           {/* Timezone Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-3">
+            <label className="block text-sm font-medium text-foreground mb-3">
               Timezone
             </label>
             <select
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 cursor-pointer hover:border-gray-400 transition-colors"
+              className="w-full px-4 py-2 border border-input rounded-lg text-sm bg-background text-foreground cursor-pointer hover:border-ring transition-colors"
             >
               <option>UTC</option>
               <option>EST (UTC-5)</option>
@@ -228,7 +228,7 @@ export function SettingsClient({
           <button
             onClick={handlePreferencesSave}
             disabled={preferencesPending}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {preferencesPending ? (
               <>
@@ -243,19 +243,19 @@ export function SettingsClient({
       </div>
 
       {/* Notifications Section */}
-      <div className="p-6 bg-white border border-gray-200 rounded-lg">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h2 className="text-lg font-semibold text-foreground mb-6">
           Notification Settings
         </h2>
 
         <div className="space-y-3 mb-6">
           {/* Email Notifications */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent transition-colors">
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-gray-900">
+              <h4 className="text-sm font-medium text-foreground">
                 Email Notifications
               </h4>
-              <p className="text-xs text-gray-600 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Receive updates via email
               </p>
             </div>
@@ -268,12 +268,12 @@ export function SettingsClient({
           </div>
 
           {/* Project Updates */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent transition-colors">
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-gray-900">
+              <h4 className="text-sm font-medium text-foreground">
                 Project Updates
               </h4>
-              <p className="text-xs text-gray-600 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Get notified about project changes
               </p>
             </div>
@@ -286,12 +286,12 @@ export function SettingsClient({
           </div>
 
           {/* Team Activity */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent transition-colors">
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-gray-900">
+              <h4 className="text-sm font-medium text-foreground">
                 Team Activity
               </h4>
-              <p className="text-xs text-gray-600 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Notifications about your team
               </p>
             </div>
@@ -304,12 +304,12 @@ export function SettingsClient({
           </div>
 
           {/* Login Alerts */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent transition-colors">
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-gray-900">
+              <h4 className="text-sm font-medium text-foreground">
                 Login Alerts
               </h4>
-              <p className="text-xs text-gray-600 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Get notified of unusual login activity
               </p>
             </div>
@@ -326,7 +326,7 @@ export function SettingsClient({
         <button
           onClick={handleNotificationsSave}
           disabled={notificationsPending}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {notificationsPending ? (
             <>

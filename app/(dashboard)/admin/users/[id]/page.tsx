@@ -35,7 +35,7 @@ export default async function UserDetailPage({ params }: { params: { id: string 
   const initials = `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50 to-orange-50">
+    <div className="min-h-screen bg-background">
       <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -44,19 +44,19 @@ export default async function UserDetailPage({ params }: { params: { id: string 
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="hover:bg-gradient-to-r hover:from-red-100 hover:to-orange-100"
+                className="hover:bg-muted/50"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 shadow-lg">
-              <Shield className="h-6 w-6 text-white" />
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary shadow-lg">
+              <Shield className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+              <h2 className="text-3xl font-bold tracking-tight text-primary">
                 Admin - User Details
               </h2>
-              <p className="text-slate-600 mt-1">
+              <p className="text-muted-foreground mt-1">
                 View and manage user information
               </p>
             </div>
@@ -78,7 +78,7 @@ export default async function UserDetailPage({ params }: { params: { id: string 
         </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="md:col-span-1 border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300">
+        <Card className="md:col-span-1 border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader>
             <CardTitle className="text-xl">Profile</CardTitle>
           </CardHeader>

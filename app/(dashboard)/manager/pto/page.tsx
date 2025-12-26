@@ -46,18 +46,18 @@ export default async function ManagerPTOPage() {
   const rejected = requests.filter((r) => r.status === "REJECTED");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-emerald-50 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-7xl space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
-            <Sparkles className="h-6 w-6 text-white" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-lg">
+            <Sparkles className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold text-primary">
               Manager - PTO
             </h1>
-            <p className="mt-1 text-slate-600">
+            <p className="mt-1 text-muted-foreground">
               Review and manage time-off requests from your team
             </p>
           </div>
@@ -65,21 +65,21 @@ export default async function ManagerPTOPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
-            <div className="text-sm font-medium text-slate-500">Pending</div>
-            <div className="mt-2 text-3xl font-bold text-slate-900">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
+            <div className="text-sm font-medium text-muted-foreground">Pending</div>
+            <div className="mt-2 text-3xl font-bold text-foreground">
               {pending.length}
             </div>
           </div>
-          <div className="rounded-2xl border border-green-200/60 bg-gradient-to-br from-green-50 to-emerald-50 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
-            <div className="text-sm font-medium text-green-700">Approved</div>
-            <div className="mt-2 text-3xl font-bold text-green-600">
+          <div className="rounded-2xl border border-primary/20 bg-primary/10 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
+            <div className="text-sm font-medium text-primary">Approved</div>
+            <div className="mt-2 text-3xl font-bold text-primary">
               {approved.length}
             </div>
           </div>
-          <div className="rounded-2xl border border-red-200/60 bg-gradient-to-br from-red-50 to-rose-50 backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
-            <div className="text-sm font-medium text-red-700">Rejected</div>
-            <div className="mt-2 text-3xl font-bold text-red-600">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg p-6 transition-all hover:shadow-xl hover:scale-105">
+            <div className="text-sm font-medium text-muted-foreground">Rejected</div>
+            <div className="mt-2 text-3xl font-bold text-foreground">
               {rejected.length}
             </div>
           </div>
@@ -87,9 +87,9 @@ export default async function ManagerPTOPage() {
 
         {/* Pending Requests */}
         {pending.length > 0 && (
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg overflow-hidden">
-            <div className="border-b border-slate-200/60 bg-gradient-to-r from-amber-50 to-yellow-50 px-6 py-4">
-              <h3 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg overflow-hidden">
+            <div className="border-b border-border bg-primary/10 px-6 py-4">
+              <h3 className="text-lg font-semibold text-foreground">
                 Pending Requests ({pending.length})
               </h3>
             </div>
@@ -103,34 +103,34 @@ export default async function ManagerPTOPage() {
 
         {/* Approved Requests */}
         {approved.length > 0 && (
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg overflow-hidden">
-            <div className="border-b border-slate-200/60 bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4">
-              <h3 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg overflow-hidden">
+            <div className="border-b border-border bg-primary/10 px-6 py-4">
+              <h3 className="text-lg font-semibold text-foreground">
                 Approved Requests ({approved.length})
               </h3>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {approved.slice(0, 10).map((request) => (
-                <div key={request.id} className="px-6 py-4 transition-all hover:bg-green-50/50">
+                <div key={request.id} className="px-6 py-4 transition-all hover:bg-muted/50">
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="font-medium text-slate-900">
+                      <div className="font-medium text-foreground">
                         {request.user.firstName} {request.user.lastName}
                       </div>
-                      <div className="mt-1 text-sm text-slate-500">
+                      <div className="mt-1 text-sm text-muted-foreground">
                         {request.type.replace("_", " ")} • {request.days} days
                       </div>
-                      <div className="mt-1 text-sm text-slate-500">
+                      <div className="mt-1 text-sm text-muted-foreground">
                         {new Date(request.startDate).toLocaleDateString()} -{" "}
                         {new Date(request.endDate).toLocaleDateString()}
                       </div>
                     </div>
                     <div className="text-sm">
-                      <span className="inline-flex rounded-full bg-gradient-to-r from-green-100 to-emerald-100 px-3 py-1 text-xs font-semibold text-green-700 shadow-sm">
+                      <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary shadow-sm">
                         Approved
                       </span>
                       {request.approver && (
-                        <div className="mt-2 text-slate-500">
+                        <div className="mt-2 text-muted-foreground">
                           by {request.approver.firstName} {request.approver.lastName}
                         </div>
                       )}
@@ -144,34 +144,34 @@ export default async function ManagerPTOPage() {
 
         {/* Rejected Requests */}
         {rejected.length > 0 && (
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg overflow-hidden">
-            <div className="border-b border-slate-200/60 bg-gradient-to-r from-red-50 to-rose-50 px-6 py-4">
-              <h3 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg overflow-hidden">
+            <div className="border-b border-border bg-card px-6 py-4">
+              <h3 className="text-lg font-semibold text-foreground">
                 Rejected Requests ({rejected.length})
               </h3>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {rejected.slice(0, 10).map((request) => (
-                <div key={request.id} className="px-6 py-4 transition-all hover:bg-red-50/30">
+                <div key={request.id} className="px-6 py-4 transition-all hover:bg-muted/50">
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="font-medium text-slate-900">
+                      <div className="font-medium text-foreground">
                         {request.user.firstName} {request.user.lastName}
                       </div>
-                      <div className="mt-1 text-sm text-slate-500">
+                      <div className="mt-1 text-sm text-muted-foreground">
                         {request.type.replace("_", " ")} • {request.days} days
                       </div>
-                      <div className="mt-1 text-sm text-slate-500">
+                      <div className="mt-1 text-sm text-muted-foreground">
                         {new Date(request.startDate).toLocaleDateString()} -{" "}
                         {new Date(request.endDate).toLocaleDateString()}
                       </div>
                       {request.rejectionReason && (
-                        <div className="mt-2 text-sm text-slate-600">
+                        <div className="mt-2 text-sm text-muted-foreground">
                           Reason: {request.rejectionReason}
                         </div>
                       )}
                     </div>
-                    <span className="inline-flex rounded-full bg-gradient-to-r from-red-100 to-rose-100 px-3 py-1 text-xs font-semibold text-red-700 shadow-sm">
+                    <span className="inline-flex rounded-full bg-card px-3 py-1 text-xs font-semibold text-foreground shadow-sm">
                       Rejected
                     </span>
                   </div>
@@ -182,7 +182,7 @@ export default async function ManagerPTOPage() {
         )}
 
         {requests.length === 0 && (
-          <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg px-6 py-12 text-center text-slate-500">
+          <div className="rounded-2xl border border-border bg-card backdrop-blur-sm shadow-lg px-6 py-12 text-center text-muted-foreground">
             No PTO requests from your team
           </div>
         )}

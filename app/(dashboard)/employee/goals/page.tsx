@@ -160,15 +160,15 @@ export default function MyGoalsPage() {
   function getStatusColor(status: string) {
     switch (status) {
       case "active":
-        return "bg-blue-100 text-blue-800";
+        return "bg-primary/10 text-blue-800";
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-green-800";
       case "on_hold":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-primary/10 text-yellow-800";
       case "cancelled":
-        return "bg-red-100 text-red-800";
+        return "bg-primary/10 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-primary/10 text-gray-800";
     }
   }
 
@@ -181,18 +181,18 @@ export default function MyGoalsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
-              <Sparkles className="h-6 w-6 text-white" />
+            <div className="p-2 rounded-xl bg-primary shadow-lg">
+              <Sparkles className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                 My Goals
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-primary mt-1">
                 Track and manage your professional goals
               </p>
             </div>
@@ -206,25 +206,25 @@ export default function MyGoalsPage() {
         {/* Stats Overview */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="pb-2">
                 <CardDescription className="font-medium">Total Goals</CardDescription>
                 <CardTitle className="text-3xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{stats.total}</CardTitle>
               </CardHeader>
             </Card>
-            <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="pb-2">
                 <CardDescription className="font-medium">Active Goals</CardDescription>
                 <CardTitle className="text-3xl bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{stats.active}</CardTitle>
               </CardHeader>
             </Card>
-            <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="pb-2">
                 <CardDescription className="font-medium">Completed</CardDescription>
                 <CardTitle className="text-3xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{stats.completed}</CardTitle>
               </CardHeader>
             </Card>
-            <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="pb-2">
                 <CardDescription className="font-medium">Average Progress</CardDescription>
                 <CardTitle className="text-3xl bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">{stats.avgProgress}%</CardTitle>
@@ -335,7 +335,7 @@ export default function MyGoalsPage() {
         {/* Goals List */}
         <div className="space-y-4">
           {goals.length === 0 ? (
-            <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg">
+            <Card className="border-border bg-card backdrop-blur-sm shadow-lg">
               <CardContent className="flex flex-col items-center justify-center py-12">
               <Target className="h-12 w-12 text-gray-400 mb-4" />
               <p className="text-gray-500 text-center">
@@ -345,7 +345,7 @@ export default function MyGoalsPage() {
           </Card>
           ) : (
             goals.map((goal) => (
-              <Card key={goal.id} className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <Card key={goal.id} className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">

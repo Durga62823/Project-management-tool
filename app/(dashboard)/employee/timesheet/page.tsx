@@ -263,25 +263,25 @@ export default function TimesheetPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-background">
       <div className="p-6 max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
-              <Sparkles className="h-6 w-6 text-white" />
+            <div className="p-2 rounded-xl bg-primary shadow-lg">
+              <Sparkles className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                 Timesheet
               </h1>
-              <p className="text-gray-600">Log and track your work hours</p>
+              <p className="text-primary">Log and track your work hours</p>
             </div>
           </div>
         <div className="flex gap-2">
@@ -306,13 +306,13 @@ export default function TimesheetPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
-                <Clock className="h-6 w-6 text-white" />
+              <div className="p-3 rounded-xl bg-primary shadow-lg">
+                <Clock className="h-6 w-6 text-primary-foreground" />
             </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Total Hours</p>
+                <p className="text-sm text-primary font-medium">Total Hours</p>
                 <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   {stats.totalHours}h
                 </p>
@@ -320,13 +320,13 @@ export default function TimesheetPage() {
             </div>
           </Card>
 
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-600 shadow-lg">
-                <Clock className="h-6 w-6 text-white" />
+              <div className="p-3 rounded-xl bg-primary shadow-lg">
+                <Clock className="h-6 w-6 text-primary-foreground" />
             </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Submitted Hours</p>
+                <p className="text-sm text-primary font-medium">Submitted Hours</p>
                 <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                   {stats.submittedHours}h
                 </p>
@@ -334,13 +334,13 @@ export default function TimesheetPage() {
             </div>
           </Card>
 
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg">
-                <Clock className="h-6 w-6 text-white" />
+              <div className="p-3 rounded-xl bg-primary shadow-lg">
+                <Clock className="h-6 w-6 text-primary-foreground" />
             </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Approved Hours</p>
+                <p className="text-sm text-primary font-medium">Approved Hours</p>
                 <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   {stats.approvedHours}h
                 </p>
@@ -351,7 +351,7 @@ export default function TimesheetPage() {
 
         {/* Current Week Info */}
         {timesheet && (
-          <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg p-6">
+          <Card className="border-border bg-card backdrop-blur-sm shadow-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-lg mb-1">
@@ -360,13 +360,13 @@ export default function TimesheetPage() {
                   getWeekNumber(new Date(timesheet.startDate))}
                 , {new Date(timesheet.startDate).getFullYear()}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-primary">
                 {formatDate(timesheet.startDate)} -{" "}
                 {formatDate(timesheet.endDate)}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-600">Total Hours This Week</p>
+              <p className="text-sm text-primary">Total Hours This Week</p>
               <p className="text-3xl font-bold">
                 {timesheet.entries?.reduce(
                   (sum: number, e: any) => sum + e.hours,
@@ -457,7 +457,7 @@ export default function TimesheetPage() {
                 )}
               </select>
               {projects.length === 0 && (
-                <p className="text-xs text-red-600 mt-1">
+                <p className="text-xs text-primary mt-1">
                   No projects found. Please contact your manager.
                 </p>
               )}
@@ -509,14 +509,14 @@ export default function TimesheetPage() {
       )}
 
         {/* Time Entries List */}
-        <Card className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg p-6">
+        <Card className="border-border bg-card backdrop-blur-sm shadow-lg p-6">
         <h3 className="font-semibold text-lg mb-4">Time Entries</h3>
         {timesheet?.entries && timesheet.entries.length > 0 ? (
           <div className="space-y-3">
             {timesheet.entries.map((entry: any) => (
               <div
                 key={entry.id}
-                className="p-4 border border-slate-200/60 rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-between hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                className="p-4 border border-border rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-between hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
@@ -527,12 +527,12 @@ export default function TimesheetPage() {
                       {entry.project?.name || "Unknown Project"}
                     </Badge>
                     {entry.task && (
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-primary">
                         Task: {entry.taskId}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-primary">
                     {entry.description || "No description"}
                   </p>
                 </div>
@@ -554,7 +554,7 @@ export default function TimesheetPage() {
                         variant="ghost"
                         onClick={() => handleDeleteEntry(entry.id)}
                       >
-                        <Trash2 className="h-4 w-4 text-red-600" />
+                        <Trash2 className="h-4 w-4 text-primary" />
                       </Button>
                     </div>
                   )}
@@ -576,7 +576,7 @@ export default function TimesheetPage() {
           timesheet.status === "DRAFT" &&
           timesheet.entries?.length > 0 && (
             <div className="mt-6 pt-6 border-t flex items-center justify-between">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-primary">
                 {timesheet.entries.length} entries •{" "}
                 {timesheet.entries.reduce(
                   (sum: number, e: any) => sum + e.hours,
@@ -602,7 +602,7 @@ export default function TimesheetPage() {
 
         {timesheet && timesheet.status === "SUBMITTED" && (
           <div className="mt-6 pt-6 border-t">
-            <p className="text-center text-gray-600">
+            <p className="text-center text-primary">
               Timesheet submitted on{" "}
               {timesheet.submittedAt
                 ? formatDate(timesheet.submittedAt)
@@ -614,7 +614,7 @@ export default function TimesheetPage() {
 
         {timesheet && timesheet.status === "APPROVED" && (
           <div className="mt-6 pt-6 border-t">
-            <div className="bg-green-50 border border-green-200 rounded p-4">
+            <div className="bg-primary/10 border border-primary/20 rounded p-4">
               <p className="text-green-800 font-medium">
                 ✓ Timesheet approved on{" "}
                 {timesheet.approvedAt
@@ -627,10 +627,10 @@ export default function TimesheetPage() {
 
         {timesheet && timesheet.status === "REJECTED" && (
           <div className="mt-6 pt-6 border-t">
-            <div className="bg-red-50 border border-red-200 rounded p-4">
+            <div className="bg-primary/10 border border-primary/20 rounded p-4">
               <p className="text-red-800 font-medium">Timesheet rejected</p>
               {timesheet.rejectionReason && (
-                <p className="text-sm text-red-700 mt-2">
+                <p className="text-sm text-primary mt-2">
                   Reason: {timesheet.rejectionReason}
                 </p>
               )}

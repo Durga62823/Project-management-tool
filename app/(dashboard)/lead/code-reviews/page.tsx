@@ -19,11 +19,11 @@ export default async function LeadCodeReviewsPage() {
 
   if (!user?.team) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
+      <div className="min-h-screen bg-background">
         <div className="text-center py-12">
-          <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl p-8 max-w-md mx-auto">
+          <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl p-8 max-w-md mx-auto">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">No Team Assigned</h2>
-            <p className="text-gray-600">Please contact your administrator to assign you to a team.</p>
+            <p className="text-primary">Please contact your administrator to assign you to a team.</p>
           </div>
         </div>
       </div>
@@ -39,13 +39,13 @@ export default async function LeadCodeReviewsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-primary/10 text-yellow-800";
       case "approved":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-green-800";
       case "changes_requested":
-        return "bg-orange-100 text-orange-800";
+        return "bg-primary/10 text-orange-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-primary/10 text-gray-800";
     }
   };
 
@@ -63,31 +63,31 @@ export default async function LeadCodeReviewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 space-y-6">
+    <div className="min-h-screen bg-background space-y-6">
       <div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full shadow-lg w-fit mb-3">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-primary-foreground rounded-full shadow-lg w-fit mb-3">
           <Sparkles className="h-4 w-4" />
           <span className="text-sm font-semibold">Code Quality</span>
         </div>
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
           Code Reviews
         </h1>
-        <p className="text-gray-600 mt-2">Review and approve pull requests from your team</p>
+        <p className="text-primary mt-2">Review and approve pull requests from your team</p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+        <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Pending Review</p>
+              <p className="text-sm font-medium text-primary mb-1">Pending Review</p>
               <p className="text-3xl font-bold bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-transparent">
                 {pendingReviews.length}
               </p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-full flex items-center justify-center shadow-md">
               <svg
-                className="w-6 h-6 text-yellow-600"
+                className="w-6 h-6 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -103,17 +103,17 @@ export default async function LeadCodeReviewsPage() {
           </div>
         </div>
 
-        <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+        <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Changes Requested</p>
+              <p className="text-sm font-medium text-primary mb-1">Changes Requested</p>
               <p className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-rose-500 bg-clip-text text-transparent">
                 {inProgressReviews.length}
               </p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-rose-100 rounded-full flex items-center justify-center shadow-md">
               <svg
-                className="w-6 h-6 text-orange-600"
+                className="w-6 h-6 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -129,17 +129,17 @@ export default async function LeadCodeReviewsPage() {
           </div>
         </div>
 
-        <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+        <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Approved</p>
+              <p className="text-sm font-medium text-primary mb-1">Approved</p>
               <p className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
                 {approvedReviews.length}
               </p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center shadow-md">
               <svg
-                className="w-6 h-6 text-green-600"
+                className="w-6 h-6 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -158,7 +158,7 @@ export default async function LeadCodeReviewsPage() {
 
       {/* Pending Reviews */}
       {pendingReviews.length > 0 && (
-        <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl hover:shadow-xl transition-all duration-300">
+        <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl hover:shadow-xl transition-all duration-300">
           <div className="p-6">
             <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
               Pending Your Review ({pendingReviews.length})
@@ -167,7 +167,7 @@ export default async function LeadCodeReviewsPage() {
               {pendingReviews.map((review) => (
                 <div
                   key={review.id}
-                  className="border border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg p-4 hover:border-purple-400 hover:shadow-md transition-all duration-300"
+                  className="border border-primary/20 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg p-4 hover:border-purple-400 hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -179,11 +179,11 @@ export default async function LeadCodeReviewsPage() {
                         </span>
                         <h3 className="font-semibold text-gray-900">{review.prTitle}</h3>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">
+                      <p className="text-sm text-primary mb-3">
                         by {review.author?.name || "Unknown"} •{" "}
                         {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-4 text-sm text-primary">
                         <span>{review.filesChanged} files changed</span>
                         <span>{review.linesChanged} lines</span>
                         {review.comments > 0 && <span>{review.comments} comments</span>}
@@ -193,7 +193,7 @@ export default async function LeadCodeReviewsPage() {
                       href={review.prUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ml-4 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm font-medium"
+                      className="ml-4 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-primary-foreground rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm font-medium"
                     >
                       Review PR →
                     </a>
@@ -207,7 +207,7 @@ export default async function LeadCodeReviewsPage() {
 
       {/* Changes Requested */}
       {inProgressReviews.length > 0 && (
-        <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl hover:shadow-xl transition-all duration-300">
+        <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl hover:shadow-xl transition-all duration-300">
           <div className="p-6">
             <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
               Changes Requested ({inProgressReviews.length})
@@ -216,7 +216,7 @@ export default async function LeadCodeReviewsPage() {
               {inProgressReviews.map((review) => (
                 <div
                   key={review.id}
-                  className="border border-orange-200 bg-gradient-to-br from-orange-50 to-rose-50 rounded-lg p-4 hover:border-orange-400 hover:shadow-md transition-all duration-300"
+                  className="border border-primary/20 bg-gradient-to-br from-orange-50 to-rose-50 rounded-lg p-4 hover:border-orange-400 hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -228,13 +228,13 @@ export default async function LeadCodeReviewsPage() {
                         </span>
                         <h3 className="font-semibold text-gray-900">{review.prTitle}</h3>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">
+                      <p className="text-sm text-primary mb-3">
                         by {review.author?.name || "Unknown"} • Reviewed{" "}
                         {review.reviewedAt
                           ? formatDistanceToNow(new Date(review.reviewedAt), { addSuffix: true })
                           : "recently"}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-4 text-sm text-primary">
                         <span>{review.filesChanged} files</span>
                         <span>{review.linesChanged} lines</span>
                         <span>{review.comments} comments</span>
@@ -244,7 +244,7 @@ export default async function LeadCodeReviewsPage() {
                       href={review.prUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ml-4 px-4 py-2 bg-gradient-to-r from-orange-600 to-rose-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm font-medium"
+                      className="ml-4 px-4 py-2 bg-gradient-to-r from-orange-600 to-rose-600 text-primary-foreground rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm font-medium"
                     >
                       View PR →
                     </a>
@@ -258,7 +258,7 @@ export default async function LeadCodeReviewsPage() {
 
       {/* Recently Approved */}
       {approvedReviews.length > 0 && (
-        <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl hover:shadow-xl transition-all duration-300">
+        <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl hover:shadow-xl transition-all duration-300">
           <div className="p-6">
             <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
               Recently Approved
@@ -267,7 +267,7 @@ export default async function LeadCodeReviewsPage() {
               {approvedReviews.map((review) => (
                 <div
                   key={review.id}
-                  className="border border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 hover:border-green-400 hover:shadow-md transition-all duration-300"
+                  className="border border-primary/20 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 hover:border-green-400 hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -279,13 +279,13 @@ export default async function LeadCodeReviewsPage() {
                         </span>
                         <h3 className="font-semibold text-gray-900">{review.prTitle}</h3>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">
+                      <p className="text-sm text-primary mb-3">
                         by {review.author?.name || "Unknown"} • Approved{" "}
                         {review.reviewedAt
                           ? formatDistanceToNow(new Date(review.reviewedAt), { addSuffix: true })
                           : "recently"}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-4 text-sm text-primary">
                         <span>{review.filesChanged} files</span>
                         <span>{review.linesChanged} lines</span>
                         {review.comments > 0 && <span>{review.comments} comments</span>}
@@ -295,7 +295,7 @@ export default async function LeadCodeReviewsPage() {
                       href={review.prUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ml-4 text-purple-600 hover:text-indigo-600 font-medium text-sm hover:scale-105 transition-transform"
+                      className="ml-4 text-primary hover:text-primary font-medium text-sm hover:scale-105 transition-transform"
                     >
                       View PR →
                     </a>
@@ -309,11 +309,11 @@ export default async function LeadCodeReviewsPage() {
 
       {/* Empty State */}
       {codeReviews.length === 0 && (
-        <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl p-12 text-center hover:shadow-xl transition-all duration-300">
+        <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl p-12 text-center hover:shadow-xl transition-all duration-300">
           <div className="max-w-md mx-auto">
             <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
               <svg
-                className="w-8 h-8 text-purple-600"
+                className="w-8 h-8 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -329,7 +329,7 @@ export default async function LeadCodeReviewsPage() {
             <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               No Code Reviews Yet
             </h2>
-            <p className="text-gray-600">
+            <p className="text-primary">
               Pull requests from your team will appear here for review.
             </p>
           </div>

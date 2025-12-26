@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { auth } from "@/lib/auth";
-import { UserMenu, LogoutButton } from "@/components/common";
+import { UserMenu, LogoutButton, ModeToggle, ColorPicker } from "@/components/common";
 
 const adminNavigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -42,10 +42,16 @@ export default async function AdminLayout({
       <aside className="hidden w-64 overflow-y-auto border-r bg-white lg:flex lg:flex-col">
         <div className="flex h-full flex-col">
           <div className="px-4 py-6 border-b">
-            <h2 className="text-lg font-bold text-gray-900">Admin Panel</h2>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-bold text-gray-900">Admin Panel</h2>
+            </div>
             <p className="text-xs text-gray-500 mt-1">
               Organization management
             </p>
+            <div className="flex items-center gap-2 mt-3">
+              <ModeToggle />
+              <ColorPicker />
+            </div>
           </div>
           <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
             {adminNavigation.map((item) => (

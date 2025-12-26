@@ -44,7 +44,7 @@ export default async function IntegrationsPage() {
     : defaultIntegrations;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50 to-orange-50">
+    <div className="min-h-screen bg-background">
       <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
         {/* Header with gradient badge */}
         <div className="flex items-center gap-4">

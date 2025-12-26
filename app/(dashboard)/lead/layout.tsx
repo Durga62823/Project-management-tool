@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SettingsProvider } from "@/components/providers/settings-provider";
+import { ModeToggle, ColorPicker, UserMenu } from "@/components/common";
 
 export default async function LeadLayout({
   children,
@@ -24,12 +25,17 @@ export default async function LeadLayout({
               <h1 className="text-2xl font-bold text-gray-900">
                 Tech Lead Dashboard
               </h1>
-              <Link
-                href="/dashboard"
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                ← Back to Dashboard
-              </Link>
+              <div className="flex items-center gap-3">
+                <ModeToggle />
+                <ColorPicker />
+                <UserMenu />
+                <Link
+                  href="/dashboard"
+                  className="text-sm text-gray-600 hover:text-gray-900"
+                >
+                  ← Back to Dashboard
+                </Link>
+              </div>
             </div>
             <nav className="flex space-x-8">
               <Link

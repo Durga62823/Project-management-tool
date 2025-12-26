@@ -21,11 +21,11 @@ export default async function TeamBoardPage() {
 
   if (!user?.team) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
+      <div className="min-h-screen bg-background">
         <div className="text-center py-12">
-          <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl p-8 max-w-md mx-auto">
+          <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl p-8 max-w-md mx-auto">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">No Team Assigned</h2>
-            <p className="text-gray-600">Please contact your administrator to assign you to a team.</p>
+            <p className="text-primary">Please contact your administrator to assign you to a team.</p>
           </div>
         </div>
       </div>
@@ -61,10 +61,10 @@ export default async function TeamBoardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
+    <div className="min-h-screen bg-background">
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full shadow-lg">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-primary-foreground rounded-full shadow-lg">
             <Sparkles className="h-4 w-4" />
             <span className="text-sm font-semibold">Tech Lead</span>
           </div>
@@ -72,10 +72,10 @@ export default async function TeamBoardPage() {
         <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
           {user.team.name} - Task Board
         </h2>
-        <p className="text-gray-600 mt-2">Manage and coordinate team tasks with intelligent tracking</p>
+        <p className="text-primary mt-2">Manage and coordinate team tasks with intelligent tracking</p>
       </div>
 
-      <div className="border-slate-200/60 bg-white/70 backdrop-blur-sm shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+      <div className="border-border bg-card backdrop-blur-sm shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
         <TaskBoard
           tasks={tasks}
           teamMembers={teamMembers}
