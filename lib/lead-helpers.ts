@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { TaskStatus, SprintStatus } from "@/lib/db/enums";
+import { TaskStatus, SprintStatus } from "@prisma/client";
 
 /**
  * Get all team members for a lead

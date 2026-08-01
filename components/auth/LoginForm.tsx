@@ -36,6 +36,7 @@ export function LoginForm() {
       if (!result.success) {
         if (result.error === "Confirm your email before logging in") {
           router.push(`/auth/verify-email?email=${encodeURIComponent(values.email)}`);
+          return;
         }
         toast.error(result.error);
         return;

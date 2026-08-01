@@ -51,6 +51,8 @@ export async function registerUser(payload: unknown): Promise<ActionResponse> {
       lastName: sanitizeInput(lastName),
       name: `${sanitizeInput(firstName)} ${sanitizeInput(lastName)}`.trim(),
       password: hashedPassword,
+      role: "EMPLOYEE",
+      status: "ACTIVE",
     },
   });
 
@@ -188,7 +190,9 @@ export async function verifyEmailOtp(payload: unknown): Promise<ActionResponse> 
   const email = sanitizeInput(parsed.data.email).toLowerCase();
   const otp = parsed.data.otp.trim();
 
-  const storedToken = await prisma.verificationToken.findUnique({
+  // Use findFirst because `token` alone is not a unique field —
+  // the table has a composite PK [identifier, token].
+  const storedToken = await prisma.verificationToken.findFirst({
     where: { token: otp },
   });
   if (!storedToken || storedToken.identifier !== email) {

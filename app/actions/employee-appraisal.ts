@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma as prismaClient } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { AppraisalStatus } from "@/lib/db/enums";
+import { AppraisalStatus } from "@prisma/client";
 
 // Type assertion for prisma
 const prisma = prismaClient as any;

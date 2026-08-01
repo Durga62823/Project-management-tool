@@ -1,13 +1,11 @@
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { eq } from "drizzle-orm";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
-import { db } from "@/lib/db";
-import { accounts, sessions, users, verificationTokens } from "@/lib/db/schema";
+import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { getRedis } from "@/lib/redis";
 import { getRequestIp, getRequestUserAgent } from "@/lib/request";
@@ -20,12 +18,7 @@ const authConfig: NextAuthConfig = {
   trustHost: true,
   secret: process.env.NEXTAUTH_SECRET,
   debug: false,
-  adapter: DrizzleAdapter(db, {
-    usersTable: users as any,
-    accountsTable: accounts as any,
-    sessionsTable: sessions as any,
-    verificationTokensTable: verificationTokens as any,
-  }) as any,
+  adapter: PrismaAdapter(prisma) as any,
   session: {
     strategy: "jwt",
     maxAge: REMEMBERED_MAX_AGE,
@@ -58,12 +51,9 @@ const authConfig: NextAuthConfig = {
 
         let user;
         try {
-          const result = await db
-            .select()
-            .from(users)
-            .where(eq(users.email, parsed.data.email))
-            .limit(1);
-          user = result[0];
+          user = await prisma.user.findUnique({
+            where: { email: parsed.data.email },
+          });
         } catch (error) {
           logger.error(
             {
@@ -127,20 +117,19 @@ const authConfig: NextAuthConfig = {
         const email = user.email || profile?.email;
         if (!email) return false;
 
-        const existingUserResult = await db.select().from(users).where(eq(users.email, email)).limit(1);
-        const existingUser = existingUserResult[0];
+        const existingUser = await prisma.user.findUnique({ where: { email } });
         const profileImage = (profile as any)?.image ?? (profile as any)?.picture;
         const profileName = (profile as any)?.name;
 
         if (existingUser) {
-          await db
-            .update(users)
-            .set({
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
               emailVerified: new Date(),
               image: user.image || profileImage || existingUser.image,
               name: user.name || profileName || existingUser.name,
-            })
-            .where(eq(users.id, existingUser.id));
+            },
+          });
         }
       }
 
@@ -161,15 +150,10 @@ const authConfig: NextAuthConfig = {
         token.provider = account.provider;
 
         if (account.provider !== "credentials" && token.sub) {
-          const dbUserResult = await db
-            .select({
-              role: users.role,
-              status: users.status,
-            })
-            .from(users)
-            .where(eq(users.id, token.sub))
-            .limit(1);
-          const dbUser = dbUserResult[0];
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.sub },
+            select: { role: true, status: true },
+          });
 
           if (dbUser) {
             token.role = dbUser.role;
@@ -217,14 +201,14 @@ const authConfig: NextAuthConfig = {
         const ip = await getRequestIp();
         const userAgent = await getRequestUserAgent();
 
-        await db
-          .update(users)
-          .set({
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
             lastLogin: new Date(),
             lastLoginIp: ip,
             lastLoginUserAgent: userAgent,
-          })
-          .where(eq(users.id, user.id));
+          },
+        });
 
         try {
           const redis = getRedis();

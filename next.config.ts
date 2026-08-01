@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
-  serverExternalPackages: ['@prisma/client', 'prisma', 'drizzle-orm', 'postgres'],
+  serverExternalPackages: ['@prisma/client', 'prisma'],
   turbopack: {},
   headers: async () =>
     process.env.NODE_ENV === "production"
